@@ -56,19 +56,15 @@ public class EmployeeController {
 
     @PutMapping
     public ResponseEntity<Employee> update(@RequestBody Employee requestEmployee) {
-        Employee foundEmployee = this.employees.stream()
-                .filter(employee -> employee.getId().equals(requestEmployee.getId()))
-                .findFirst()
-                .orElse(null);
+        boolean isDeleted = this.employees.removeIf(employee -> employee.getId().equals(requestEmployee.getId()));
 
-        if(foundEmployee == null) {
-            return ResponseEntity.notFound().build();
-        }
-        else {
-            this.employees.remove(foundEmployee);
+        if(isDeleted) {
             this.employees.add(requestEmployee);
 
             return ResponseEntity.ok(requestEmployee);
+        }
+        else {
+            return ResponseEntity.notFound().build();
         }
     }
 
