@@ -15,7 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -201,5 +203,29 @@ public class CompanyServiceTest {
 
         //then
         assertNull(returnedCompany);
+    }
+
+    @Test
+    void should_return_true_when_delete_given_found_company() {
+        //given
+        when(this.companyRepository.delete(1)).thenReturn(true);
+
+        //when
+        boolean result = this.companyService.delete(1);
+
+        //then
+        assertTrue(result);
+    }
+
+    @Test
+    void should_return_false_when_delete_given_not_found_company() {
+        //given
+        when(this.companyRepository.delete(1)).thenReturn(false);
+
+        //when
+        boolean result = this.companyService.delete(1);
+
+        //then
+        assertFalse(result);
     }
 }

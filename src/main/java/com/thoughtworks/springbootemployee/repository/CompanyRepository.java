@@ -1,7 +1,6 @@
 package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.dto.Company;
-import com.thoughtworks.springbootemployee.dto.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,5 +50,9 @@ public class CompanyRepository {
         else {
             return null;
         }
+    }
+
+    public boolean delete(int id) {
+        return  this.companies.removeIf(company -> company.getId().equals(id));
     }
 }

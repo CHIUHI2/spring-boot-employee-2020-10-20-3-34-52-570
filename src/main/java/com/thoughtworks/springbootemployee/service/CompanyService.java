@@ -39,4 +39,8 @@ public class CompanyService {
     public Company update(Integer id, Company company) {
         return this.companyRepository.update(id, company);
     }
+
+    public boolean delete(Integer id) {
+        return this.companyRepository.delete(id);
+    }
 }
