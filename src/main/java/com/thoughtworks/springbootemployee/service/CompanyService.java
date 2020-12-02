@@ -31,4 +31,8 @@ public class CompanyService {
     public List<Company> findCompaniesWithPagination(Integer pageIndex, Integer pageSize) {
         return this.companyRepository.findCompaniesWithPagination(pageIndex, pageSize);
     }
+
+    public Company add(Company company) {
+        return this.companyRepository.save(company);
+    }
 }

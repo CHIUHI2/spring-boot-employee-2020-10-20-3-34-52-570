@@ -137,7 +137,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_call_company_repository_save_once_and_return_correct_company_when_add_company_given_not_existed_company() {
+    void should_call_company_repository_save_once_and_return_correct_company_when_add_given_not_existed_company() {
         //given
         Company company = new Company(1, "Company1");
 
