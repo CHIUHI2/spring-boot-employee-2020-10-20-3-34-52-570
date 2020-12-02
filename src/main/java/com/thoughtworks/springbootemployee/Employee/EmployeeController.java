@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,5 +53,21 @@ public class EmployeeController {
         return employee;
     }
 
+    @PutMapping
+    public ResponseEntity<Employee> update(@RequestBody Employee requestEmployee) {
+        Employee foundEmployee = this.employees.stream()
+                .filter(employee -> employee.getId().equals(requestEmployee.getId()))
+                .findFirst()
+                .orElse(null);
 
+        if(foundEmployee == null) {
+            return ResponseEntity.notFound().build();
+        }
+        else {
+            this.employees.remove(foundEmployee);
+            this.employees.add(requestEmployee);
+
+            return ResponseEntity.ok(requestEmployee);
+        }
+    }
 }
