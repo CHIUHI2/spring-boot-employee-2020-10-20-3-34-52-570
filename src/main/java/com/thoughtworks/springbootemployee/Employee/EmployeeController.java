@@ -29,11 +29,11 @@ public class EmployeeController {
 
     @GetMapping(params = {"gender"})
     public ResponseEntity<List<Employee>> getAllWithGender(@RequestParam("gender") String gender) {
-        List<Employee> maleEmployees = this.employees.stream()
+        List<Employee> employees = this.employees.stream()
                 .filter(employee -> gender.equalsIgnoreCase(employee.getGender()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(maleEmployees);
+        return ResponseEntity.ok(employees);
     }
 
     @GetMapping(params = {"page", "pageSize"})
