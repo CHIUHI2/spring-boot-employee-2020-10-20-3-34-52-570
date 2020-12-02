@@ -28,7 +28,7 @@ public class EmployeeService {
         return this.employeeRepository.findEmployeeById(id);
     }
 
-    public Employee create(Employee employee) {
+    public Employee add(Employee employee) {
         return this.employeeRepository.save(employee);
     }
 

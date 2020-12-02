@@ -38,9 +38,14 @@ public class EmployeeRepository {
     }
 
     public Employee save(Employee employee) {
-        this.employees.add(employee);
+        if(this.employees.contains(employee)) {
+            return null;
+        }
+        else {
+            this.employees.add(employee);
 
-        return employee;
+            return employee;
+        }
     }
 
     public Employee update(Integer id, Employee requestEmployee) {

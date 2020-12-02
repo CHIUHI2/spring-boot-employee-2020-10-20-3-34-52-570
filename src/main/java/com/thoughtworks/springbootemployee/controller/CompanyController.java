@@ -44,7 +44,7 @@ public class CompanyController {
 
     @GetMapping("/{id}/employees")
     public ResponseEntity<List<Employee>> getEmployees(@PathVariable Integer id) {
-        List<Employee> employees = this.companyService.findCompanyEmplyeesById(id);
+        List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
 
         return employees == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employees);
     }
