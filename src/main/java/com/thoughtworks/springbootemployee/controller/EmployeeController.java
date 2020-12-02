@@ -62,9 +62,9 @@ public class EmployeeController {
        return employee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(requestEmployee) ;
     }
 
-    @DeleteMapping("/{employeeId}")
-    public ResponseEntity<Void> delete(@PathVariable Integer employeeId) {
-        boolean isDeleted = this.employees.removeIf(employee -> employee.getId().equals(employeeId));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        boolean isDeleted = this.employeeService.delete(id);
 
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build() ;
     }

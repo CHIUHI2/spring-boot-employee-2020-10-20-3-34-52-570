@@ -54,4 +54,8 @@ public class EmployeeRepository {
             return null;
         }
     }
+
+    public boolean delete(int id) {
+        return this.employees.removeIf(employee -> employee.getId().equals(id));
+    }
 }

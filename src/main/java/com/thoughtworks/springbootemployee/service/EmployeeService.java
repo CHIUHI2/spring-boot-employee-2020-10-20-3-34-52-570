@@ -39,4 +39,8 @@ public class EmployeeService {
     public Employee replace(Employee employee) {
         return this.employeeRepository.replace(employee);
     }
+
+    public boolean delete(int id) {
+        return this.employeeRepository.delete(id);
+    }
 }

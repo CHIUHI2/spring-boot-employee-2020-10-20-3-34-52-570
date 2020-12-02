@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class EmployeeServiceTest {
@@ -148,5 +150,29 @@ public class EmployeeServiceTest {
 
         //then
         assertNull(returnedEmployees);
+    }
+
+    @Test
+    public void should_return_true_when_delete_given_found_id() {
+        //given
+        when(employeeRepository.delete(1)).thenReturn(true);
+
+        //when
+        boolean result = employeeService.delete(1);
+
+        //then
+        assertTrue(result);
+    }
+
+    @Test
+    public void should_return_false_when_delete_given_not_found_id() {
+        //given
+        when(employeeRepository.delete(1)).thenReturn(true);
+
+        //when
+        boolean result = employeeService.delete(2);
+
+        //then
+        assertFalse(result);
     }
 }
