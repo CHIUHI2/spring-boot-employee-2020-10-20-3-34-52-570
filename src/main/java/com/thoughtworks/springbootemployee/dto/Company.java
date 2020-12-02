@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Company {
+    private Integer id;
     private String companyName;
     private Integer employeesNumber;
     private List<Employee> employees;
 
-    Company(String companyName) {
+    public Company(Integer id, String companyName) {
+        this.id = id;
         this.companyName = companyName;
         this.employees = new ArrayList<>();
         this.employeesNumber = 0;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getCompanyName() {
