@@ -27,4 +27,8 @@ public class CompanyService {
 
         return company.getEmployees();
     }
+
+    public List<Company> findCompaniesWithPagination(Integer pageIndex, Integer pageSize) {
+        return this.companyRepository.findCompaniesWithPagination(pageIndex, pageSize);
+    }
 }
