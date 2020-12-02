@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.dto.Company;
+import com.thoughtworks.springbootemployee.dto.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,18 @@ public class CompanyRepository {
             this.companies.add(company);
 
             return company;
+        }
+    }
+
+    public Company update(Integer id, Company requestCompany) {
+        boolean isDeleted =  this.companies.removeIf(company -> company.getId().equals(id));
+
+        if(isDeleted) {
+            this.findAll().add(requestCompany);
+            return requestCompany;
+        }
+        else {
+            return null;
         }
     }
 }

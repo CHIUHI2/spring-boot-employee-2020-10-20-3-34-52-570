@@ -35,4 +35,8 @@ public class CompanyService {
     public Company add(Company company) {
         return this.companyRepository.save(company);
     }
+
+    public Company update(Integer id, Company company) {
+        return this.companyRepository.update(id, company);
+    }
 }

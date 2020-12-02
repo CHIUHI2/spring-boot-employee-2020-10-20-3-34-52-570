@@ -170,4 +170,36 @@ public class CompanyServiceTest {
         //then
         assertNull(returnedCompany);
     }
+
+    @Test
+    void should_call_company_repository_update_once_and_return_correct_company_when_update_given_found_company() {
+        //given
+        Company company = new Company(1, "Company1");
+
+        when(this.companyRepository.update(1, company)).thenReturn(company);
+
+        //when
+        Company returnedCompany = this.companyService.update(1, company);
+
+        //then
+        verify(this.companyRepository, times(1)).update(1, company);
+        assertEquals(company.getId(), returnedCompany.getId());
+        assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
+        assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
+        assertEquals(company.getEmployees(), returnedCompany.getEmployees());
+    }
+
+    @Test
+    void should_return_null_when_update_given_not_found_company() {
+        //given
+        Company company = new Company(1, "Company1");
+
+        when(this.companyRepository.update(1, company)).thenReturn(null);
+
+        //when
+        Company returnedCompany = this.companyService.update(1, company);
+
+        //then
+        assertNull(returnedCompany);
+    }
 }
