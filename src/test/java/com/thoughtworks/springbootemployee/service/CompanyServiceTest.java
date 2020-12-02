@@ -117,7 +117,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_last_company_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
+    void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
         //given
         Company company1 = new Company(1, "Company1");
         Company company2 = new Company(2, "Company2");
