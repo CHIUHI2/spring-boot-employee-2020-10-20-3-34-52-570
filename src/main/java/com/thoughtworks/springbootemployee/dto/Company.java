@@ -31,4 +31,8 @@ public class Company {
     public List<Employee> getEmployees() {
         return employees;
     }
+
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+    }
 }
