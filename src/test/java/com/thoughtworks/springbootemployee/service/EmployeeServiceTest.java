@@ -64,20 +64,21 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_last_employee_when_get_all_with_pagination_given_employees_3_page_index_2_page_size_2() {
+    public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_2_page_size_2() {
         //given
         Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
         Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
+        Employee employee4 = new Employee(4, "Winnie", 20, "Female", 250000);
 
-        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3));
+        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3, employee4));
         when(employeeRepository.findEmployeesWithPagination(2, 2)).thenCallRealMethod();
 
         //when
         List<Employee> returnedEmployees = employeeService.findEmployeesWithPagination(2, 2);
 
         //then
-        assertEquals(Collections.singletonList(employee3), returnedEmployees);
+        assertEquals(Arrays.asList(employee3, employee4), returnedEmployees);
     }
 
     @Test
