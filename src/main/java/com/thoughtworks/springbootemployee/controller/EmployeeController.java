@@ -1,6 +1,8 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.dto.Employee;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,20 +23,19 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
+    @Autowired
+    private EmployeeService employeeService;
+
     List<Employee> employees = new ArrayList<>();
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAll() {
-        return ResponseEntity.ok(this.employees);
+        return ResponseEntity.ok(this.employeeService.findAll());
     }
 
     @GetMapping(params = {"gender"})
     public ResponseEntity<List<Employee>> getAllWithGender(@RequestParam("gender") String gender) {
-        List<Employee> employees = this.employees.stream()
-                .filter(employee -> gender.equalsIgnoreCase(employee.getGender()))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(employees);
+        return ResponseEntity.ok(this.employeeService.findAllByGender(gender));
     }
 
     @GetMapping(params = {"page", "pageSize"})

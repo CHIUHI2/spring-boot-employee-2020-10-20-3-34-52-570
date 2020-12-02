@@ -13,7 +13,15 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
     public List<Employee> findAll() {
         return employeeRepository.findAll();
+    }
+
+    public List<Employee> findAllByGender(String gender) {
+        return employeeRepository.findAllWithGender(gender);
     }
 }

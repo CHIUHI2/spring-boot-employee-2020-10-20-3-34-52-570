@@ -18,10 +18,10 @@ import static org.mockito.Mockito.when;
 
 public class EmployeeServiceTest {
     @Mock
-    EmployeeRepository employeeRepository;
+    EmployeeRepository employeeRepository = Mockito.mock(EmployeeRepository.class);
 
     @InjectMocks
-    EmployeeService employeeService;
+    EmployeeService employeeService = new EmployeeService(employeeRepository);
 
     @Test
     public void should_return_all_employees_when_get_all_given_all_employees() {
@@ -35,6 +35,24 @@ public class EmployeeServiceTest {
 
         //when
         List<Employee> returnedEmployees = employeeService.findAll();
+
+        //then
+        assertEquals(expectedEmployees, returnedEmployees);
+    }
+
+    @Test
+    public void should_return_all_male_employees_when_get_all_with_gender_given_all_employees() {
+        //given
+        List<Employee> expectedEmployees = Arrays.asList(
+                new Employee(1, "Sam", 20, "Male", 20000),
+                new Employee(2, "Ken", 20, "Male", 30000),
+                new Employee(3, "Anna", 20, "Female", 250000)
+        );
+
+        when(employeeRepository.findAllWithGender("Male")).thenReturn(expectedEmployees);
+
+        //when
+        List<Employee> returnedEmployees = employeeService.findAllByGender("Male");
 
         //then
         assertEquals(expectedEmployees, returnedEmployees);
