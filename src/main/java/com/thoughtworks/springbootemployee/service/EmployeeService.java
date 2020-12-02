@@ -27,4 +27,8 @@ public class EmployeeService {
     public List<Employee> findAllWithPagination(int pageIndex, int pageSize) {
         return this.employeeRepository.findAllWithPagination(pageIndex, pageSize);
     }
+
+    public Employee findEmployeeById(int id) {
+        return this.employeeRepository.findEmployeeById(id);
+    }
 }

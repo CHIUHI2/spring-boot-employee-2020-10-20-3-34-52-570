@@ -70,4 +70,18 @@ public class EmployeeServiceTest {
         //then
         assertEquals(expectedEmployees, returnedEmployees);
     }
+
+    @Test
+    public void should_return_correct_employee_when_find_employee_by_id_given_id() {
+        //given
+        Employee expectedEmployees = new Employee(1, "Sam", 20, "Male", 20000);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(expectedEmployees);
+
+        //when
+        Employee returnedEmployees = employeeService.findEmployeeById(1);
+
+        //then
+        assertEquals(expectedEmployees, returnedEmployees);
+    }
 }

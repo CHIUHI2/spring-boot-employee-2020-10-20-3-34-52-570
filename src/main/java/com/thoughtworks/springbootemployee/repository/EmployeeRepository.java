@@ -29,4 +29,11 @@ public class EmployeeRepository {
                 .limit(pageSize)
                 .collect(Collectors.toList());
     }
+
+    public Employee findEmployeeById(int id) {
+        return this.employees.stream()
+                .filter(employee -> employee.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
 }
