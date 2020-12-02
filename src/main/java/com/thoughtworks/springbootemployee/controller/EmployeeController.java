@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employees")
@@ -34,13 +33,13 @@ public class EmployeeController {
     }
 
     @GetMapping(params = {"gender"})
-    public ResponseEntity<List<Employee>> getAllWithGender(@RequestParam("gender") String gender) {
-        return ResponseEntity.ok(this.employeeService.findAllByGender(gender));
+    public ResponseEntity<List<Employee>> getAllByGender(@RequestParam("gender") String gender) {
+        return ResponseEntity.ok(this.employeeService.findEmployeesByGender(gender));
     }
 
     @GetMapping(params = {"page", "pageSize"})
     public ResponseEntity<List<Employee>> getAllWithPagination(@RequestParam("page") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
-        return ResponseEntity.ok(this.employeeService.findAllWithPagination(pageIndex, pageSize));
+        return ResponseEntity.ok(this.employeeService.findEmployeesWithPagination(pageIndex, pageSize));
     }
 
     @GetMapping("/{employeeId}")

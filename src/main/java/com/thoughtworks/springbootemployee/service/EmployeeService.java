@@ -20,12 +20,12 @@ public class EmployeeService {
         return this.employeeRepository.findAll();
     }
 
-    public List<Employee> findAllByGender(String gender) {
-        return this.employeeRepository.findAllByGender(gender);
+    public List<Employee> findEmployeesByGender(String gender) {
+        return this.employeeRepository.findEmployeesByGender(gender);
     }
 
-    public List<Employee> findAllWithPagination(int pageIndex, int pageSize) {
-        return this.employeeRepository.findAllWithPagination(pageIndex, pageSize);
+    public List<Employee> findEmployeesWithPagination(int pageIndex, int pageSize) {
+        return this.employeeRepository.findEmployeesWithPagination(pageIndex, pageSize);
     }
 
     public Employee findEmployeeById(int id) {

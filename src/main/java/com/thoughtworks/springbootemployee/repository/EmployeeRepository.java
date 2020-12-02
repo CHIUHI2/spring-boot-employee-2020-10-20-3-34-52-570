@@ -15,13 +15,13 @@ public class EmployeeRepository {
         return this.employees;
     }
 
-    public List<Employee> findAllByGender(String gender) {
+    public List<Employee> findEmployeesByGender(String gender) {
         return this.employees.stream()
                 .filter(employee -> gender.equalsIgnoreCase(employee.getGender()))
                 .collect(Collectors.toList());
     }
 
-    public List<Employee> findAllWithPagination(int pageIndex, int pageSize) {
+    public List<Employee> findEmployeesWithPagination(int pageIndex, int pageSize) {
         int itemAmountToBeSkip = (pageIndex - 1) * pageSize;
 
         return this.employees.stream()

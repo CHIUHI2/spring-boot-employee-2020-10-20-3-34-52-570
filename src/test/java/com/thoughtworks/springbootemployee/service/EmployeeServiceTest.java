@@ -46,10 +46,10 @@ public class EmployeeServiceTest {
                 new Employee(3, "Anna", 20, "Female", 250000)
         );
 
-        when(employeeRepository.findAllByGender("Male")).thenReturn(expectedEmployees);
+        when(employeeRepository.findEmployeesByGender("Male")).thenReturn(expectedEmployees);
 
         //when
-        List<Employee> returnedEmployees = employeeService.findAllByGender("Male");
+        List<Employee> returnedEmployees = employeeService.findEmployeesByGender("Male");
 
         //then
         assertEquals(expectedEmployees, returnedEmployees);
@@ -62,10 +62,10 @@ public class EmployeeServiceTest {
                 new Employee(1, "Sam", 20, "Male", 20000)
         );
 
-        when(employeeRepository.findAllWithPagination(2, 3)).thenReturn(expectedEmployees);
+        when(employeeRepository.findEmployeesWithPagination(2, 3)).thenReturn(expectedEmployees);
 
         //when
-        List<Employee> returnedEmployees = employeeService.findAllWithPagination(2, 3);
+        List<Employee> returnedEmployees = employeeService.findEmployeesWithPagination(2, 3);
 
         //then
         assertEquals(expectedEmployees, returnedEmployees);
