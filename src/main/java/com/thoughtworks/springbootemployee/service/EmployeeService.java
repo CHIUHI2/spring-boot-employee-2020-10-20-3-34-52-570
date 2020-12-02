@@ -5,7 +5,6 @@ import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Service
@@ -18,10 +17,14 @@ public class EmployeeService {
     }
 
     public List<Employee> findAll() {
-        return employeeRepository.findAll();
+        return this.employeeRepository.findAll();
     }
 
     public List<Employee> findAllByGender(String gender) {
-        return employeeRepository.findAllWithGender(gender);
+        return this.employeeRepository.findAllByGender(gender);
+    }
+
+    public List<Employee> findAllWithPagination(int pageIndex, int pageSize) {
+        return this.employeeRepository.findAllWithPagination(pageIndex, pageSize);
     }
 }
