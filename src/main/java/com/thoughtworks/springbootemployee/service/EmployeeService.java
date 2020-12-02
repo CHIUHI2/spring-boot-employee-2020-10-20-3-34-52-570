@@ -12,10 +12,6 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
-
     public List<Employee> findAll() {
         return this.employeeRepository.findAll();
     }
@@ -33,11 +29,11 @@ public class EmployeeService {
     }
 
     public Employee create(Employee employee) {
-        return this.employeeRepository.create(employee);
+        return this.employeeRepository.save(employee);
     }
 
-    public Employee replace(Employee employee) {
-        return this.employeeRepository.replace(employee);
+    public Employee update(Integer id, Employee employee) {
+        return this.employeeRepository.update(id, employee);
     }
 
     public boolean delete(int id) {

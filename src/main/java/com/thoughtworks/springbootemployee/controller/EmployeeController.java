@@ -42,9 +42,9 @@ public class EmployeeController {
         return ResponseEntity.ok(this.employeeService.findEmployeesWithPagination(pageIndex, pageSize));
     }
 
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<Employee> getOne(@PathVariable Integer employeeId) {
-        Employee employee = this.employeeService.findEmployeeById(employeeId);
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> getOne(@PathVariable Integer id) {
+        Employee employee = this.employeeService.findEmployeeById(id);
 
         return employee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employee);
     }
@@ -55,11 +55,11 @@ public class EmployeeController {
         return this.employeeService.create(employee);
     }
 
-    @PutMapping
-    public ResponseEntity<Employee> replace(@RequestBody Employee requestEmployee) {
-       Employee employee = this.employeeService.replace(requestEmployee);
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> update(@PathVariable Integer id, @RequestBody Employee employee) {
+       Employee updatedEmployee = this.employeeService.update(id, employee);
 
-       return employee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(requestEmployee) ;
+       return updatedEmployee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employee) ;
     }
 
     @DeleteMapping("/{id}")
