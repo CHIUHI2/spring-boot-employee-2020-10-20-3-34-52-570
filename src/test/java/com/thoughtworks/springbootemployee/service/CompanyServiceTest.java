@@ -40,4 +40,20 @@ public class CompanyServiceTest {
         //then
         assertEquals(expectedCompanies, returnedCompanies);
     }
+
+    @Test
+    void should_return_correct_company_when_find_company_by_id_given_all_companies() {
+        //given
+        Company company1 = new Company(1, "Company1");
+        Company company2 = new Company(2, "Company2");
+
+        when(companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(companyRepository.findCompanyById(1)).thenCallRealMethod();
+
+        //when
+        Company company = companyService.findCompanyById(1);
+
+        //then
+        assertEquals(company1, company);
+    }
 }

@@ -11,4 +11,11 @@ public class CompanyRepository {
     public List<Company> findAll() {
         return this.companies;
     }
+
+    public Company findCompanyById(Integer id) {
+        return this.findAll().stream()
+                .filter(company -> company.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
 }
