@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,7 +106,7 @@ public class CompanyServiceTest {
         company1.addEmployee(new Employee(1, "Sam", 20, "Male", 20000));
         company1.addEmployee(new Employee(2, "Ken", 20, "Male", 20000));
 
-        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1));
+        when(this.companyRepository.findAll()).thenReturn(Collections.singletonList(company1));
         when(this.companyRepository.findCompanyById(2)).thenCallRealMethod();
 
         //when
@@ -113,5 +114,23 @@ public class CompanyServiceTest {
 
         //then
         assertNull(employees);
+    }
+
+    @Test
+    void should_return_last_company_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
+        //given
+        Company company1 = new Company(1, "Company1");
+        Company company2 = new Company(2, "Company2");
+        Company company3 = new Company(3, "Company3");
+        Company company4 = new Company(4, "Company4");
+
+        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2, company3, company4));
+        when(this.companyRepository.findCompaniesWithPagination(2, 2)).thenCallRealMethod();
+
+        //when
+        List<Company> companies = this.companyService.findCompaniesWithPagination(2, 2);
+
+        //this
+        assertEquals(Arrays.asList(company3, company4), companies);
     }
 }
