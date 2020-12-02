@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public class EmployeeRepository {
-    private List<Employee> employees = new ArrayList<>();
+    private final List<Employee> employees = new ArrayList<>();
 
     public List<Employee> findAll() {
-        return null;
+        return this.employees;
     }
 }
