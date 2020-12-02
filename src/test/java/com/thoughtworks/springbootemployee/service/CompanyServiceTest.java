@@ -16,7 +16,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -132,5 +134,26 @@ public class CompanyServiceTest {
 
         //this
         assertEquals(Arrays.asList(company3, company4), companies);
+    }
+
+    @Test
+    void should_call_company_repository_save_once_and_return_correct_company_when_add_company_given_not_existed_company() {
+        //given
+        Company company = new Company(1, "Company1");
+
+        Employee employee = new Employee(1, "Ken", 19, "Male", 20000);
+        company.addEmployee(employee);
+
+        when(this.companyRepository.save(company)).thenReturn(company);
+
+        //when
+        Company returnedCompany = this.companyService.add(company);
+
+        //then
+        verify(this.companyRepository, times(1)).save(company);
+        assertEquals(company.getId(), returnedCompany.getId());
+        assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
+        assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
+        assertEquals(company.getEmployees(), returnedCompany.getEmployees());
     }
 }

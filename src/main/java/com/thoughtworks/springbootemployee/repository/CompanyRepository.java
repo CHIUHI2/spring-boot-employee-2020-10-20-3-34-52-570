@@ -28,4 +28,15 @@ public class CompanyRepository {
                 .limit(pageSize)
                 .collect(Collectors.toList());
     }
+
+    public Company save(Company company) {
+        if(this.companies.contains(company)) {
+            return null;
+        }
+        else {
+            this.companies.add(company);
+
+            return company;
+        }
+    }
 }
