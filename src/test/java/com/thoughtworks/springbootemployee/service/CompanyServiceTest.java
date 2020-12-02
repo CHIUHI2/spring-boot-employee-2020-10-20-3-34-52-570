@@ -156,4 +156,18 @@ public class CompanyServiceTest {
         assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
         assertEquals(company.getEmployees(), returnedCompany.getEmployees());
     }
+
+    @Test
+    void should_return_null_when_add_given_existed_company() {
+        //given
+        Company company = new Company(1, "Company1");
+
+        when(this.companyRepository.save(company)).thenReturn(null);
+
+        //when
+        Company returnedCompany = this.companyService.add(company);
+
+        //then
+        assertNull(returnedCompany);
+    }
 }
