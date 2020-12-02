@@ -32,10 +32,10 @@ public class CompanyServiceTest {
             new Company(2, "Company2")
         );
 
-        when(companyRepository.findAll()).thenReturn(expectedCompanies);
+        when(this.companyRepository.findAll()).thenReturn(expectedCompanies);
 
         //when
-        List<Company> returnedCompanies = companyService.findAll();
+        List<Company> returnedCompanies = this.companyService.findAll();
 
         //then
         assertEquals(expectedCompanies, returnedCompanies);
@@ -47,11 +47,11 @@ public class CompanyServiceTest {
         Company company1 = new Company(1, "Company1");
         Company company2 = new Company(2, "Company2");
 
-        when(companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
-        when(companyRepository.findCompanyById(1)).thenCallRealMethod();
+        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
 
         //when
-        Company company = companyService.findCompanyById(1);
+        Company company = this.companyService.findCompanyById(1);
 
         //then
         assertEquals(company1, company);

@@ -15,6 +15,6 @@ public class CompanyService {
     }
 
     public Company findCompanyById(Integer id) {
-        return null;
+        return this.companyRepository.findCompanyById(id);
     }
 }
