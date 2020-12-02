@@ -64,7 +64,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_last_employee_when_get_all_with_pagination_given_four_employees_page_index_2_page_size_2() {
+    public void should_return_last_employee_when_get_all_with_pagination_given_employees_3_page_index_2_page_size_2() {
         //given
         Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
