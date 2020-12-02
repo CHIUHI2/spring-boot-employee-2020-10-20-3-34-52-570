@@ -36,6 +36,18 @@ public class EmployeeController {
         return ResponseEntity.ok(maleEmployees);
     }
 
+    @GetMapping(params = {"page", "pageSize"})
+    public ResponseEntity<List<Employee>> getAllWithPagination(@RequestParam("page") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
+        int itemAmountToBeSkip = (pageIndex - 1) * pageSize;
+
+        List<Employee> employees = this.employees.stream()
+                .skip(itemAmountToBeSkip)
+                .limit(pageSize)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(employees);
+    }
+
     @GetMapping("/{employeeId}")
     public ResponseEntity<Employee> getOne(@PathVariable Integer employeeId) {
         Employee targetEmployee = this.employees.stream()
