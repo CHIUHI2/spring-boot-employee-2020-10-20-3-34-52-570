@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 public class EmployeeServiceTest {
@@ -72,17 +73,31 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_correct_employee_when_find_employee_by_id_given_id() {
+    public void should_return_correct_employee_when_find_employee_by_id_given_found_id() {
         //given
-        Employee expectedEmployees = new Employee(1, "Sam", 20, "Male", 20000);
+        Employee expectedEmployee = new Employee(1, "Sam", 20, "Male", 20000);
 
-        when(employeeRepository.findEmployeeById(1)).thenReturn(expectedEmployees);
+        when(employeeRepository.findEmployeeById(1)).thenReturn(expectedEmployee);
 
         //when
         Employee returnedEmployees = employeeService.findEmployeeById(1);
 
         //then
-        assertEquals(expectedEmployees, returnedEmployees);
+        assertEquals(expectedEmployee, returnedEmployees);
+    }
+
+    @Test
+    public void should_return_null_when_find_employee_by_id_given_not_found_id() {
+        //given
+        Employee employee = new Employee(1, "Sam", 20, "Male", 20000);
+
+        when(employeeRepository.findEmployeeById(1)).thenReturn(employee);
+
+        //when
+        Employee returnedEmployees = employeeService.findEmployeeById(2);
+
+        //then
+        assertNull(returnedEmployees);
     }
 
     @Test
@@ -101,5 +116,37 @@ public class EmployeeServiceTest {
         assertEquals(expectedEmployees.getGender(), returnedEmployees.getGender());
         assertEquals(expectedEmployees.getName(), returnedEmployees.getName());
         assertEquals(expectedEmployees.getSalary(), returnedEmployees.getSalary());
+    }
+
+    @Test
+    public void should_return_correct_employee_when_replace_given_found_employee() {
+        //given
+        Employee expectedEmployees = new Employee(1, "Sam", 20, "Male", 20000);
+
+        when(employeeRepository.replace(expectedEmployees)).thenReturn(expectedEmployees);
+
+        //when
+        Employee returnedEmployees = employeeService.replace(expectedEmployees);
+
+        //then
+        assertEquals(expectedEmployees.getId(), returnedEmployees.getId());
+        assertEquals(expectedEmployees.getAge(), returnedEmployees.getAge());
+        assertEquals(expectedEmployees.getGender(), returnedEmployees.getGender());
+        assertEquals(expectedEmployees.getName(), returnedEmployees.getName());
+        assertEquals(expectedEmployees.getSalary(), returnedEmployees.getSalary());
+    }
+
+    @Test
+    public void should_return_null_when_replace_given_not_found_employee() {
+        //given
+        Employee expectedEmployees = new Employee(1, "Sam", 20, "Male", 20000);
+
+        when(employeeRepository.replace(expectedEmployees)).thenReturn(expectedEmployees);
+
+        //when
+        Employee returnedEmployees = employeeService.replace(new Employee(2, "Ken", 20, "Male", 20000));
+
+        //then
+        assertNull(returnedEmployees);
     }
 }

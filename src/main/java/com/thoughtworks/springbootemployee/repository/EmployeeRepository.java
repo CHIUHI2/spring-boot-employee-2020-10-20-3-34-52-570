@@ -42,4 +42,16 @@ public class EmployeeRepository {
 
         return employee;
     }
+
+    public Employee replace(Employee requestEmployee) {
+        boolean isDeleted = this.employees.removeIf(employee -> employee.getId().equals(requestEmployee.getId()));
+
+        if(isDeleted) {
+            this.employees.add(requestEmployee);
+            return requestEmployee;
+        }
+        else {
+            return null;
+        }
+    }
 }

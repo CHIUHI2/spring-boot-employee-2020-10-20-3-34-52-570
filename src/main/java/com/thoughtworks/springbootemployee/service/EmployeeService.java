@@ -35,4 +35,8 @@ public class EmployeeService {
     public Employee create(Employee employee) {
         return this.employeeRepository.create(employee);
     }
+
+    public Employee replace(Employee employee) {
+        return this.employeeRepository.replace(employee);
+    }
 }

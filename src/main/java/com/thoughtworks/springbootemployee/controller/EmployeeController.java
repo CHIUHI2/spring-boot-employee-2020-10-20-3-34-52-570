@@ -56,17 +56,10 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public ResponseEntity<Employee> update(@RequestBody Employee requestEmployee) {
-        boolean isDeleted = this.employees.removeIf(employee -> employee.getId().equals(requestEmployee.getId()));
+    public ResponseEntity<Employee> replace(@RequestBody Employee requestEmployee) {
+       Employee employee = this.employeeService.replace(requestEmployee);
 
-        if(isDeleted) {
-            this.employees.add(requestEmployee);
-
-            return ResponseEntity.ok(requestEmployee);
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+       return employee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(requestEmployee) ;
     }
 
     @DeleteMapping("/{employeeId}")
