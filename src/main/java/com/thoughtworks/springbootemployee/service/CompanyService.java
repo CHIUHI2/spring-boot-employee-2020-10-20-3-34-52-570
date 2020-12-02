@@ -21,7 +21,7 @@ public class CompanyService {
         return this.companyRepository.findCompanyById(id);
     }
 
-    public List<Employee> findCompanyEmplyeesById(Integer id) {
+    public List<Employee> findCompanyEmployeesById(Integer id) {
         Company company = this.companyRepository.findCompanyById(id);
         if(company == null) {
             return null;

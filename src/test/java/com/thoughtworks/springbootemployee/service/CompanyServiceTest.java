@@ -97,7 +97,7 @@ public class CompanyServiceTest {
         when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
 
         //when
-        List<Employee> employees = this.companyService.findCompanyEmplyeesById(1);
+        List<Employee> employees = this.companyService.findCompanyEmployeesById(1);
 
         //then
         assertEquals(Arrays.asList(employee1, employee2), employees);
@@ -114,7 +114,7 @@ public class CompanyServiceTest {
         when(this.companyRepository.findCompanyById(2)).thenCallRealMethod();
 
         //when
-        List<Employee> employees = this.companyService.findCompanyEmplyeesById(2);
+        List<Employee> employees = this.companyService.findCompanyEmployeesById(2);
 
         //then
         assertNull(employees);
