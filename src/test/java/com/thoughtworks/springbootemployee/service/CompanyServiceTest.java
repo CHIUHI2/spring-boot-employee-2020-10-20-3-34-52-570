@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -42,7 +43,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_correct_company_when_find_company_by_id_given_all_companies() {
+    void should_return_correct_company_when_find_company_by_id_given_found_id() {
         //given
         Company company1 = new Company(1, "Company1");
         Company company2 = new Company(2, "Company2");
@@ -55,5 +56,21 @@ public class CompanyServiceTest {
 
         //then
         assertEquals(company1, company);
+    }
+
+    @Test
+    void should_return_null_when_find_company_by_id_given_not_found_id() {
+        //given
+        Company company1 = new Company(1, "Company1");
+        Company company2 = new Company(2, "Company2");
+
+        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(this.companyRepository.findCompanyById(3)).thenCallRealMethod();
+
+        //when
+        Company company = this.companyService.findCompanyById(3);
+
+        //then
+        assertNull(company);
     }
 }
