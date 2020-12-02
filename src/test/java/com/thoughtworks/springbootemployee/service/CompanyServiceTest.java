@@ -97,4 +97,21 @@ public class CompanyServiceTest {
         //then
         assertEquals(Arrays.asList(employee1, employee2), employees);
     }
+
+    @Test
+    void should_return_null_when_find_company_employees_by_id_given_not_found_id() {
+        //given
+        Company company1 = new Company(1, "Company1");
+        company1.addEmployee(new Employee(1, "Sam", 20, "Male", 20000));
+        company1.addEmployee(new Employee(2, "Ken", 20, "Male", 20000));
+
+        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1));
+        when(this.companyRepository.findCompanyById(2)).thenCallRealMethod();
+
+        //when
+        List<Employee> employees = this.companyService.findCompanyEmplyeesById(2);
+
+        //then
+        assertNull(employees);
+    }
 }
