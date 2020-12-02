@@ -1,5 +1,6 @@
-package com.thoughtworks.springbootemployee.Employee;
+package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.dto.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

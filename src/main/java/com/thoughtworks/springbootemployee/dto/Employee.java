@@ -1,4 +1,4 @@
-package com.thoughtworks.springbootemployee.Employee;
+package com.thoughtworks.springbootemployee.dto;
 
 public class Employee {
     private Integer id;

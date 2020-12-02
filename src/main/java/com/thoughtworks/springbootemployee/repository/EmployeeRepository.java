@@ -1,5 +1,6 @@
-package com.thoughtworks.springbootemployee.Employee;
+package com.thoughtworks.springbootemployee.repository;
 
+import com.thoughtworks.springbootemployee.dto.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

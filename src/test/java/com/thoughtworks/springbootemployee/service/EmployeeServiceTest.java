@@ -1,8 +1,7 @@
-package com.thoughtworks.springbootemployee;
+package com.thoughtworks.springbootemployee.service;
 
-import com.thoughtworks.springbootemployee.Employee.Employee;
-import com.thoughtworks.springbootemployee.Employee.EmployeeRepository;
-import com.thoughtworks.springbootemployee.Employee.EmployeeService;
+import com.thoughtworks.springbootemployee.dto.Employee;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

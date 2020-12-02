@@ -1,5 +1,7 @@
-package com.thoughtworks.springbootemployee.Employee;
+package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.dto.Employee;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
