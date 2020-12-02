@@ -36,4 +36,10 @@ public class EmployeeRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+    public Employee create(Employee employee) {
+        this.employees.add(employee);
+
+        return employee;
+    }
 }

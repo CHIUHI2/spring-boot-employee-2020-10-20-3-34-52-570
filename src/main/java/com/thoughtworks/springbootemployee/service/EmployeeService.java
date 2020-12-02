@@ -31,4 +31,8 @@ public class EmployeeService {
     public Employee findEmployeeById(int id) {
         return this.employeeRepository.findEmployeeById(id);
     }
+
+    public Employee create(Employee employee) {
+        return this.employeeRepository.create(employee);
+    }
 }

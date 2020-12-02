@@ -44,20 +44,15 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}")
     public ResponseEntity<Employee> getOne(@PathVariable Integer employeeId) {
-        Employee targetEmployee = this.employees.stream()
-                .filter(employee -> employee.getId().equals(employeeId))
-                .findFirst()
-                .orElse(null);
+        Employee employee = this.employeeService.findEmployeeById(employeeId);
 
-        return targetEmployee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(targetEmployee);
+        return employee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employee);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee employee) {
-        this.employees.add(employee);
-
-        return employee;
+        return this.employeeService.create(employee);
     }
 
     @PutMapping

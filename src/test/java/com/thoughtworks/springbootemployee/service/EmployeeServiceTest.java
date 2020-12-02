@@ -84,4 +84,22 @@ public class EmployeeServiceTest {
         //then
         assertEquals(expectedEmployees, returnedEmployees);
     }
+
+    @Test
+    public void should_return_correct_employee_when_create_given_employee() {
+        //given
+        Employee expectedEmployees = new Employee(1, "Sam", 20, "Male", 20000);
+
+        when(employeeRepository.create(expectedEmployees)).thenReturn(expectedEmployees);
+
+        //when
+        Employee returnedEmployees = employeeService.create(expectedEmployees);
+
+        //then
+        assertEquals(expectedEmployees.getId(), returnedEmployees.getId());
+        assertEquals(expectedEmployees.getAge(), returnedEmployees.getAge());
+        assertEquals(expectedEmployees.getGender(), returnedEmployees.getGender());
+        assertEquals(expectedEmployees.getName(), returnedEmployees.getName());
+        assertEquals(expectedEmployees.getSalary(), returnedEmployees.getSalary());
+    }
 }
