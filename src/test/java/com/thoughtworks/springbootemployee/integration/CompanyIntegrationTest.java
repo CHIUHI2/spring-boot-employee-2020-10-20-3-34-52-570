@@ -239,4 +239,21 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$[0].gender").value("Male"))
                 .andExpect(jsonPath("$[0].salary").value(20000));
     }
+
+    @Test
+    void should_return_404_when_get_employees_given_not_found_id() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 20, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+
+        Company company = new Company("Company");
+        company.addEmployee(addedEmployee);
+        Company addedCompany = this.companyRepository.save(company);
+        this.companyRepository.deleteAll();
+
+        //when
+        //then
+        this.mockMvc.perform(get("/companies/" + addedCompany.getId() + "/employees"))
+                .andExpect(status().isNotFound());
+    }
 }
