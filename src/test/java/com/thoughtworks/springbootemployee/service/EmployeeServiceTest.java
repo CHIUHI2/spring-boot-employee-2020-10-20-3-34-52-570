@@ -38,8 +38,7 @@ public class EmployeeServiceTest {
                 new Employee(2, "Ken", 20, "Male", 30000)
         );
 
-        when(this.employeeRepository.getEmployees()).thenReturn(employees);
-        when(this.employeeRepository.findAll(null, null, null)).thenCallRealMethod();
+        when(this.employeeRepository.findAll(null, null, null)).thenReturn(employees);
 
         //when
         List<Employee> returnedEmployees = this.employeeService.findAll(null, null, null);
@@ -51,67 +50,58 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_all_male_employees_when_get_all_by_gender_given_all_employees() {
         //given
-        Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
-        Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
-        Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
+        List<Employee> employees = Arrays.asList(
+                new Employee(1, "Sam", 20, "Male", 20000),
+                new Employee(2, "Ken", 20, "Male", 30000)
+        );
 
-        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
-        when(this.employeeRepository.findAll("Male", null, null)).thenCallRealMethod();
+        when(this.employeeRepository.findAll("Male", null, null)).thenReturn(employees);
 
         //when
         List<Employee> returnedEmployees = this.employeeService.findAll("Male", null, null);
 
         //then
-        assertEquals(Arrays.asList(employee1, employee2), returnedEmployees);
+        assertEquals(employees, returnedEmployees);
     }
 
     @Test
     public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_2_page_size_2() {
         //given
-        Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
-        Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
-        Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
-        Employee employee4 = new Employee(4, "Winnie", 20, "Female", 250000);
+        List<Employee> employees = Arrays.asList(
+                new Employee(1, "Sam", 20, "Male", 20000),
+                new Employee(2, "Ken", 20, "Male", 30000)
+        );
 
-        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3, employee4));
-        when(this.employeeRepository.findAll(null, 2, 2)).thenCallRealMethod();
+        when(this.employeeRepository.findAll(null, 2, 2)).thenReturn(employees);
 
         //when
         List<Employee> returnedEmployees = this.employeeService.findAll(null, 2, 2);
 
         //then
-        assertEquals(Arrays.asList(employee3, employee4), returnedEmployees);
+        assertEquals(employees, returnedEmployees);
     }
 
     @Test
     public void should_return_correct_employee_when_find_employee_by_id_given_found_id() {
         //given
-        Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
-        Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
-        Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
+        Employee employee = new Employee(1, "Sam", 20, "Male", 20000);
 
-        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
-        when(this.employeeRepository.findEmployeeById(1)).thenCallRealMethod();
+        when(this.employeeRepository.findEmployeeById(1)).thenReturn(employee);
 
         //when
         Employee returnedEmployee = this.employeeService.findEmployeeById(1);
 
         //then
-        assertEquals(employee1, returnedEmployee);
+        assertEquals(employee, returnedEmployee);
     }
 
     @Test
     public void should_return_null_when_find_employee_by_id_given_not_found_id() {
         //given
-        Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
-        Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
-        Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
-
-        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
-        when(this.employeeRepository.findEmployeeById(4)).thenCallRealMethod();
+        when(this.employeeRepository.findEmployeeById(1)).thenReturn(null);
 
         //when
-        Employee returnedEmployee = this.employeeService.findEmployeeById(4);
+        Employee returnedEmployee = this.employeeService.findEmployeeById(1);
 
         //then
         assertNull(returnedEmployee);
@@ -128,7 +118,6 @@ public class EmployeeServiceTest {
         Employee returnedEmployees = this.employeeService.add(employee);
 
         //then
-        verify(this.employeeRepository, times(1)).save(employee);
         assertEquals(employee.getId(), returnedEmployees.getId());
         assertEquals(employee.getAge(), returnedEmployees.getAge());
         assertEquals(employee.getGender(), returnedEmployees.getGender());
@@ -165,7 +154,6 @@ public class EmployeeServiceTest {
         Employee returnedEmployee = this.employeeService.update(1, employees);
 
         //then
-        verify(this.employeeRepository, times(1)).update(1, employees);
         assertEquals(employees.getId(), returnedEmployee.getId());
         assertEquals(employees.getAge(), returnedEmployee.getAge());
         assertEquals(employees.getGender(), returnedEmployee.getGender());

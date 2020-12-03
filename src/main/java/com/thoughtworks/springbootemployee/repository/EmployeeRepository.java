@@ -12,12 +12,8 @@ import java.util.stream.Collectors;
 public class EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
 
-    public List<Employee> getEmployees() {
-        return this.employees;
-    }
-
     public List<Employee> findAll(String gender, Integer page, Integer pageSize) {
-        List<Employee> employees = this.getEmployees();
+        List<Employee> employees = this.employees;
 
         if(Strings.isNotEmpty(gender)) {
             employees = this.filterByGender(gender, employees);
@@ -45,8 +41,8 @@ public class EmployeeRepository {
                 .collect(Collectors.toList());
     }
 
-    public Employee findEmployeeById(int id) {
-        return  this.getEmployees().stream()
+    public Employee findEmployeeById(Integer id) {
+        return  this.employees.stream()
                 .filter(employee -> employee.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -70,7 +66,7 @@ public class EmployeeRepository {
         boolean isDeleted =  this.employees.removeIf(employee -> employee.getId().equals(id));
 
         if(isDeleted) {
-            this.getEmployees().add(requestEmployee);
+            this.employees.add(requestEmployee);
             return requestEmployee;
         }
         else {
@@ -78,7 +74,7 @@ public class EmployeeRepository {
         }
     }
 
-    public boolean delete(int id) {
+    public boolean delete(Integer id) {
         return  this.employees.removeIf(employee -> employee.getId().equals(id));
     }
 }
