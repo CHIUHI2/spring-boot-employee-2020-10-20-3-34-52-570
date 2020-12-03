@@ -9,7 +9,10 @@ public class Company {
     private Integer employeesNumber;
     private List<Employee> employees;
 
-    public Company() {}
+    public Company() {
+        this.employees = new ArrayList<>();
+        this.employeesNumber = 0;
+    }
 
     public Company(Integer id, String companyName) {
         this.id = id;
