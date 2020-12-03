@@ -164,5 +164,24 @@ public class CompanyIntegrationTest {
         assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
     }
 
+    @Test
+    void should_return_404_when_replace_given_not_found_id_and_company() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+        this.companyRepository.deleteAll();
 
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("companyName", "Company1");
+
+        //when
+        //then
+        this.mockMvc.perform(put("/companies/" + addedCompany.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isNotFound());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(0, companies.size());
+    }
 }
