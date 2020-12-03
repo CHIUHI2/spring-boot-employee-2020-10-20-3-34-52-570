@@ -41,14 +41,17 @@ public class CompanyRepository {
                 .orElse(null);
     }
 
-    public Company save(Company company) {
-        if(this.companies.contains(company)) {
+    public Company save(Company requestCompany) {
+        boolean isExisted = this.companies.stream()
+                .allMatch(company -> company.getId().equals(requestCompany.getId()));
+
+        if(isExisted) {
             return null;
         }
         else {
-            this.companies.add(company);
+            this.companies.add(requestCompany);
 
-            return company;
+            return requestCompany;
         }
     }
 
