@@ -225,6 +225,9 @@ public class EmployeeIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody.toString())
                     ).andExpect(status().isNotFound());
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(0, employees.size());
     }
 
     @Test
