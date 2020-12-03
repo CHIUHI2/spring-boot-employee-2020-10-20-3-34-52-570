@@ -204,4 +204,25 @@ public class EmployeeIntegrationTest {
         assertEquals("Male", employees.get(0).getGender());
         assertEquals(20000, employees.get(0).getSalary());
     }
+
+    @Test
+    void should_return_404_when_replace_given_not_found_id_and_employee() throws Exception {
+        //given
+        Employee employee = new Employee("Ken", 20, "Male", 30000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+        this.employeeRepository.deleteAll();
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name", "Sam");
+        requestBody.put("age", 18);
+        requestBody.put("gender", "Male");
+        requestBody.put("salary", 20000);
+
+        //when
+        //then
+        this.mockMvc.perform(put("/employees/" + addedEmployee.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody.toString())
+                    ).andExpect(status().isNotFound());
+    }
 }
