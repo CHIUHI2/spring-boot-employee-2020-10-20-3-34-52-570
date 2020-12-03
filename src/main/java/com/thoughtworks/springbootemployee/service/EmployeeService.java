@@ -35,7 +35,7 @@ public class EmployeeService {
         return this.employeeRepository.insert(employee);
     }
 
-    public Employee update(String id, Employee requestEmployee) {
+    public Employee replace(String id, Employee requestEmployee) {
         if(!this.employeeRepository.existsById(id)) {
             return null;
         }

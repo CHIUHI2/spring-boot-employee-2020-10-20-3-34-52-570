@@ -153,7 +153,7 @@ public class EmployeeServiceTest {
         when(this.employeeRepository.save(employee)).thenReturn(employee);
 
         //when
-        Employee returnedEmployee = this.employeeService.update("1", employee);
+        Employee returnedEmployee = this.employeeService.replace("1", employee);
 
         //then
         assertEquals(employee.getId(), returnedEmployee.getId());
@@ -171,7 +171,7 @@ public class EmployeeServiceTest {
         when(this.employeeRepository.existsById("1")).thenReturn(false);
 
         //when
-        Employee returnedEmployee = employeeService.update("1", employee);
+        Employee returnedEmployee = employeeService.replace("1", employee);
 
         //then
         assertNull(returnedEmployee);

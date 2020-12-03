@@ -16,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -143,7 +144,7 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    void should_return_employee_when_add_given_employee() throws Exception {
+    void should_return_added_employee_when_add_given_employee() throws Exception {
         //given
         JSONObject requestBody = new JSONObject();
         requestBody.put("name", "Sam");
@@ -165,6 +166,39 @@ public class EmployeeIntegrationTest {
 
         List<Employee> employees = this.employeeRepository.findAll();
         assertEquals(1, employees.size());
+        assertEquals("Sam", employees.get(0).getName());
+        assertEquals(18, employees.get(0).getAge());
+        assertEquals("Male", employees.get(0).getGender());
+        assertEquals(20000, employees.get(0).getSalary());
+    }
+
+    @Test
+    void should_return_updated_employee_when_replace_given_found_id_and_employee() throws Exception {
+        //given
+        Employee employee = new Employee("Ken", 20, "Male", 30000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name", "Sam");
+        requestBody.put("age", 18);
+        requestBody.put("gender", "Male");
+        requestBody.put("salary", 20000);
+
+        //when
+        //then
+        this.mockMvc.perform(put("/employees/" + addedEmployee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(addedEmployee.getId()))
+                .andExpect(jsonPath("$.name").value("Sam"))
+                .andExpect(jsonPath("$.age").value(18))
+                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.salary").value(20000));
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(1, employees.size());
+        assertEquals(addedEmployee.getId(), employees.get(0).getId());
         assertEquals("Sam", employees.get(0).getName());
         assertEquals(18, employees.get(0).getAge());
         assertEquals("Male", employees.get(0).getGender());
