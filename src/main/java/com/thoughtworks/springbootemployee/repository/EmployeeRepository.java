@@ -52,14 +52,17 @@ public class EmployeeRepository {
                 .orElse(null);
     }
 
-    public Employee save(Employee employee) {
-        if(this.employees.contains(employee)) {
+    public Employee save(Employee requestEmployee) {
+        boolean isExisted = this.employees.stream()
+                .anyMatch(employee -> employee.getId().equals(requestEmployee.getId()));
+
+        if(isExisted) {
             return null;
         }
         else {
-            this.employees.add(employee);
+            this.employees.add(requestEmployee);
 
-            return employee;
+            return requestEmployee;
         }
     }
 
