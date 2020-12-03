@@ -113,6 +113,23 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
+    void should_return_employee_when_get_one_given_employee() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+
+        //when
+        //then
+        this.mockMvc.perform(get("/employees/" + addedEmployee.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isString())
+                .andExpect(jsonPath("$.name").value("Sam"))
+                .andExpect(jsonPath("$.age").value(18))
+                .andExpect(jsonPath("$.gender").value("Male"))
+                .andExpect(jsonPath("$.salary").value(20000));
+    }
+
+    @Test
     void should_return_employee_when_add_given_employee() throws Exception {
         //given
         JSONObject requestBody = new JSONObject();
