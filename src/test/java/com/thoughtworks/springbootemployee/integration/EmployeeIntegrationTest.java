@@ -14,9 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -224,5 +226,33 @@ public class EmployeeIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody.toString())
                     ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_204_when_delete_given_found_id() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+
+        //when
+        //then
+        this.mockMvc.perform(delete("/employees/" + addedEmployee.getId()))
+                .andExpect(status().isNoContent());
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(0, employees.size());
+    }
+
+    @Test
+    void should_return_404_when_delete_given_not_found_id() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+        this.employeeRepository.deleteAll();
+
+        //when
+        //then
+        this.mockMvc.perform(delete("/employees/" + addedEmployee.getId()))
+                .andExpect(status().isNotFound());
     }
 }
