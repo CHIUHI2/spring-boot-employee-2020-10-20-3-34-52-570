@@ -43,7 +43,7 @@ public class CompanyRepository {
 
     public Company save(Company requestCompany) {
         boolean isExisted = this.companies.stream()
-                .allMatch(company -> company.getId().equals(requestCompany.getId()));
+                .anyMatch(company -> company.getId().equals(requestCompany.getId()));
 
         if(isExisted) {
             return null;
