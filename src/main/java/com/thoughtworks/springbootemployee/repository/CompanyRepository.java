@@ -11,12 +11,8 @@ import java.util.stream.Collectors;
 public class CompanyRepository {
     List<Company> companies = new ArrayList<>();
 
-    public List<Company> getCompanies() {
-        return this.companies;
-    }
-
     public List<Company> findAll(Integer page, Integer pageSize) {
-        List<Company> companies = this.getCompanies();
+        List<Company> companies = this.companies;
 
         if(page != null && pageSize != null) {
             companies = this.doPagination(page, pageSize, companies);
@@ -35,7 +31,7 @@ public class CompanyRepository {
     }
 
     public Company findCompanyById(Integer id) {
-        return this.getCompanies().stream()
+        return this.companies.stream()
                 .filter(company -> company.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -48,23 +44,22 @@ public class CompanyRepository {
         if(isExisted) {
             return null;
         }
-        else {
-            this.companies.add(requestCompany);
 
-            return requestCompany;
-        }
+        this.companies.add(requestCompany);
+
+        return requestCompany;
     }
 
     public Company update(Integer id, Company requestCompany) {
         boolean isDeleted =  this.companies.removeIf(company -> company.getId().equals(id));
 
         if(isDeleted) {
-            this.getCompanies().add(requestCompany);
+            this.companies.add(requestCompany);
+
             return requestCompany;
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     public boolean delete(int id) {

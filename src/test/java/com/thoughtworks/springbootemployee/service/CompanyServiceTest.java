@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +38,7 @@ public class CompanyServiceTest {
             new Company(2, "Company2")
         );
 
-        when(this.companyRepository.getCompanies()).thenReturn(expectedCompanies);
-        when(this.companyRepository.findAll(null, null)).thenCallRealMethod();
+        when(this.companyRepository.findAll(null, null)).thenReturn(expectedCompanies);
 
         //when
         List<Company> returnedCompanies = this.companyService.findAll(null, null);
@@ -52,30 +50,24 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_company_when_find_company_by_id_given_found_id() {
         //given
-        Company company1 = new Company(1, "Company1");
-        Company company2 = new Company(2, "Company2");
+        Company company = new Company(1, "Company1");
 
-        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
-        when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
+        when(this.companyRepository.findCompanyById(1)).thenReturn(company);
 
         //when
-        Company company = this.companyService.findCompanyById(1);
+        Company returnedCompany = this.companyService.findCompanyById(1);
 
         //then
-        assertEquals(company1, company);
+        assertEquals(company, returnedCompany);
     }
 
     @Test
     void should_return_null_when_find_company_by_id_given_not_found_id() {
         //given
-        Company company1 = new Company(1, "Company1");
-        Company company2 = new Company(2, "Company2");
-
-        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
-        when(this.companyRepository.findCompanyById(3)).thenCallRealMethod();
+        when(this.companyRepository.findCompanyById(1)).thenReturn(null);
 
         //when
-        Company company = this.companyService.findCompanyById(3);
+        Company company = this.companyService.findCompanyById(1);
 
         //then
         assertNull(company);
@@ -84,18 +76,15 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_employees_when_find_company_employees_by_id_given_found_id() {
         //given
-        Company company1 = new Company(1, "Company1");
+        Company company = new Company(1, "Company1");
 
         Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
-        company1.addEmployee(employee1);
+        company.addEmployee(employee1);
 
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 20000);
-        company1.addEmployee(employee2);
+        company.addEmployee(employee2);
 
-        Company company2 = new Company(2, "Company2");
-
-        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
-        when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
+        when(this.companyRepository.findCompanyById(1)).thenReturn(company);
 
         //when
         List<Employee> employees = this.companyService.findCompanyEmployeesById(1);
@@ -107,15 +96,10 @@ public class CompanyServiceTest {
     @Test
     void should_return_null_when_find_company_employees_by_id_given_not_found_id() {
         //given
-        Company company1 = new Company(1, "Company1");
-        company1.addEmployee(new Employee(1, "Sam", 20, "Male", 20000));
-        company1.addEmployee(new Employee(2, "Ken", 20, "Male", 20000));
-
-        when(this.companyRepository.getCompanies()).thenReturn(Collections.singletonList(company1));
-        when(this.companyRepository.findCompanyById(2)).thenCallRealMethod();
+        when(this.companyRepository.findCompanyById(1)).thenReturn(null);
 
         //when
-        List<Employee> employees = this.companyService.findCompanyEmployeesById(2);
+        List<Employee> employees = this.companyService.findCompanyEmployeesById(1);
 
         //then
         assertNull(employees);
@@ -124,19 +108,18 @@ public class CompanyServiceTest {
     @Test
     void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
         //given
-        Company company1 = new Company(1, "Company1");
-        Company company2 = new Company(2, "Company2");
-        Company company3 = new Company(3, "Company3");
-        Company company4 = new Company(4, "Company4");
+        List<Company> expectedCompanies = Arrays.asList(
+                new Company(3, "Company3"),
+                new Company(4, "Company4")
+        );
 
-        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2, company3, company4));
-        when(this.companyRepository.findAll(2, 2)).thenCallRealMethod();
+        when(this.companyRepository.findAll(2, 2)).thenReturn(expectedCompanies);
 
         //when
         List<Company> companies = this.companyService.findAll(2, 2);
 
         //this
-        assertEquals(Arrays.asList(company3, company4), companies);
+        assertEquals(expectedCompanies, companies);
     }
 
     @Test
@@ -185,7 +168,6 @@ public class CompanyServiceTest {
         Company returnedCompany = this.companyService.update(1, company);
 
         //then
-        verify(this.companyRepository, times(1)).update(1, company);
         assertEquals(company.getId(), returnedCompany.getId());
         assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
         assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
