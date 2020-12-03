@@ -11,24 +11,34 @@ import java.util.stream.Collectors;
 public class CompanyRepository {
     List<Company> companies = new ArrayList<>();
 
-    public List<Company> findAll() {
+    public List<Company> getCompanies() {
         return this.companies;
     }
 
-    public Company findCompanyById(Integer id) {
-        return this.findAll().stream()
-                .filter(company -> company.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public List<Company> findAll(Integer page, Integer pageSize) {
+        List<Company> companies = this.getCompanies();
+
+        if(page != null && pageSize != null) {
+            companies = this.doPagination(page, pageSize, companies);
+        }
+
+        return companies;
     }
 
-    public List<Company> findCompaniesWithPagination(Integer pageIndex, Integer pageSize) {
-        int itemAmountToBeSkip = (pageIndex - 1) * pageSize;
+    private List<Company> doPagination(Integer page, Integer pageSize, List<Company> companies) {
+        int itemAmountToBeSkip = (page - 1) * pageSize;
 
-        return this.findAll().stream()
+        return companies.stream()
                 .skip(itemAmountToBeSkip)
                 .limit(pageSize)
                 .collect(Collectors.toList());
+    }
+
+    public Company findCompanyById(Integer id) {
+        return this.getCompanies().stream()
+                .filter(company -> company.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public Company save(Company company) {
@@ -46,7 +56,7 @@ public class CompanyRepository {
         boolean isDeleted =  this.companies.removeIf(company -> company.getId().equals(id));
 
         if(isDeleted) {
-            this.findAll().add(requestCompany);
+            this.getCompanies().add(requestCompany);
             return requestCompany;
         }
         else {

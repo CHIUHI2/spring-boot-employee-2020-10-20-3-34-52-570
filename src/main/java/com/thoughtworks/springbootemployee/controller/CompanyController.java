@@ -26,13 +26,11 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<List<Company>> getAll() {
-        return ResponseEntity.ok(this.companyService.findAll());
-    }
-
-    @GetMapping(params = {"page", "pageSize"})
-    public ResponseEntity<List<Company>> getAllWithPagination(@RequestParam("page") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
-        return ResponseEntity.ok(this.companyService.findCompaniesWithPagination(pageIndex, pageSize));
+    public ResponseEntity<List<Company>> getAll(
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer pageSize
+    ) {
+        return ResponseEntity.ok(this.companyService.findAll(page, pageSize));
     }
 
     @GetMapping("/{id}")

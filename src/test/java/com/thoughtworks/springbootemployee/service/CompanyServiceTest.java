@@ -39,10 +39,11 @@ public class CompanyServiceTest {
             new Company(2, "Company2")
         );
 
-        when(this.companyRepository.findAll()).thenReturn(expectedCompanies);
+        when(this.companyRepository.getCompanies()).thenReturn(expectedCompanies);
+        when(this.companyRepository.findAll(null, null)).thenReturn(expectedCompanies);
 
         //when
-        List<Company> returnedCompanies = this.companyService.findAll();
+        List<Company> returnedCompanies = this.companyService.findAll(null, null);
 
         //then
         assertEquals(expectedCompanies, returnedCompanies);
@@ -54,7 +55,7 @@ public class CompanyServiceTest {
         Company company1 = new Company(1, "Company1");
         Company company2 = new Company(2, "Company2");
 
-        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
         when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
 
         //when
@@ -70,7 +71,7 @@ public class CompanyServiceTest {
         Company company1 = new Company(1, "Company1");
         Company company2 = new Company(2, "Company2");
 
-        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
         when(this.companyRepository.findCompanyById(3)).thenCallRealMethod();
 
         //when
@@ -93,7 +94,7 @@ public class CompanyServiceTest {
 
         Company company2 = new Company(2, "Company2");
 
-        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
+        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2));
         when(this.companyRepository.findCompanyById(1)).thenCallRealMethod();
 
         //when
@@ -110,7 +111,7 @@ public class CompanyServiceTest {
         company1.addEmployee(new Employee(1, "Sam", 20, "Male", 20000));
         company1.addEmployee(new Employee(2, "Ken", 20, "Male", 20000));
 
-        when(this.companyRepository.findAll()).thenReturn(Collections.singletonList(company1));
+        when(this.companyRepository.getCompanies()).thenReturn(Collections.singletonList(company1));
         when(this.companyRepository.findCompanyById(2)).thenCallRealMethod();
 
         //when
@@ -128,11 +129,11 @@ public class CompanyServiceTest {
         Company company3 = new Company(3, "Company3");
         Company company4 = new Company(4, "Company4");
 
-        when(this.companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2, company3, company4));
-        when(this.companyRepository.findCompaniesWithPagination(2, 2)).thenCallRealMethod();
+        when(this.companyRepository.getCompanies()).thenReturn(Arrays.asList(company1, company2, company3, company4));
+        when(this.companyRepository.findAll(2, 2)).thenCallRealMethod();
 
         //when
-        List<Company> companies = this.companyService.findCompaniesWithPagination(2, 2);
+        List<Company> companies = this.companyService.findAll(2, 2);
 
         //this
         assertEquals(Arrays.asList(company3, company4), companies);

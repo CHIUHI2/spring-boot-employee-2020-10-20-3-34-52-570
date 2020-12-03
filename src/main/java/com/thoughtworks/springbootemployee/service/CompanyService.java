@@ -13,8 +13,8 @@ public class CompanyService {
     @Autowired
     CompanyRepository companyRepository;
 
-    public List<Company> findAll() {
-        return this.companyRepository.findAll();
+    public List<Company> findAll(Integer page, Integer pageSize) {
+        return this.companyRepository.findAll(page, pageSize);
     }
 
     public Company findCompanyById(Integer id) {
@@ -28,10 +28,6 @@ public class CompanyService {
         }
 
         return company.getEmployees();
-    }
-
-    public List<Company> findCompaniesWithPagination(Integer pageIndex, Integer pageSize) {
-        return this.companyRepository.findCompaniesWithPagination(pageIndex, pageSize);
     }
 
     public Company add(Company company) {
