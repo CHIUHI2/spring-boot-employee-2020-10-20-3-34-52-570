@@ -78,10 +78,10 @@ public class CompanyServiceTest {
         //given
         Company company = new Company(1, "Company1");
 
-        Employee employee1 = new Employee(1, "Sam", 20, "Male", 20000);
+        Employee employee1 = new Employee("1", "Sam", "20", "Male", "20000");
         company.addEmployee(employee1);
 
-        Employee employee2 = new Employee(2, "Ken", 20, "Male", 20000);
+        Employee employee2 = new Employee("2", "Ken", "20", "Male", "20000");
         company.addEmployee(employee2);
 
         when(this.companyRepository.findCompanyById(1)).thenReturn(company);
@@ -127,7 +127,7 @@ public class CompanyServiceTest {
         //given
         Company company = new Company(1, "Company1");
 
-        Employee employee = new Employee(1, "Ken", 19, "Male", 20000);
+        Employee employee = new Employee("1", "Ken", "19", "Male", "20000");
         company.addEmployee(employee);
 
         when(this.companyRepository.save(company)).thenReturn(company);

@@ -3,32 +3,56 @@ package com.thoughtworks.springbootemployee.service;
 import com.thoughtworks.springbootemployee.dto.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> findAll(String gender, Integer page, Integer pageSize) {
-        return this.employeeRepository.findAll(gender, page, pageSize);
+    public List<Employee> findAll() {
+        return this.employeeRepository.findAll();
     }
 
-    public Employee findEmployeeById(int id) {
-        return this.employeeRepository.findEmployeeById(id);
+    public List<Employee> findAllByGender(String gender) {
+        return this.employeeRepository.findAllByGender(gender);
+    }
+
+    public Page<Employee> findAllWithPagination(Pageable pageable) {
+        return this.employeeRepository.findAll(pageable);
+    }
+
+    public Optional<Employee> findEmployeeById(String id) {
+        return this.employeeRepository.findById(id);
     }
 
     public Employee add(Employee employee) {
-        return this.employeeRepository.save(employee);
+        return this.employeeRepository.insert(employee);
     }
 
-    public Employee update(Integer id, Employee employee) {
-        return this.employeeRepository.update(id, employee);
+    public Employee update(String id, Employee requestEmployee) {
+        Optional<Employee> employee = this.employeeRepository.findById(id);
+
+        if(!employee.isPresent()) {
+            return null;
+        }
+
+        return this.employeeRepository.save(requestEmployee);
     }
 
-    public boolean delete(int id) {
-        return this.employeeRepository.delete(id);
+    public boolean delete(String id) {
+        Optional<Employee> employee = this.employeeRepository.findById(id);
+
+        if(!employee.isPresent()) {
+            return false;
+        }
+
+        this.employeeRepository.deleteById(id);
+        return true;
     }
 }

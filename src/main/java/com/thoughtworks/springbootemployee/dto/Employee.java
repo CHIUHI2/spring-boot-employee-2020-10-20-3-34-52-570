@@ -1,15 +1,20 @@
 package com.thoughtworks.springbootemployee.dto;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
+@Document
 public class Employee {
-    private Integer id;
+    @MongoId
+    private String id;
     private String name;
-    private Integer age;
+    private String age;
     private String gender;
-    private Integer salary;
+    private String salary;
 
     public Employee() {}
 
-    public Employee(Integer id, String name, Integer age, String gender, Integer salary) {
+    public Employee(String id, String name, String age, String gender, String salary) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -17,7 +22,7 @@ public class Employee {
         this.salary = salary;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -25,7 +30,7 @@ public class Employee {
         return name;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
@@ -33,7 +38,7 @@ public class Employee {
         return gender;
     }
 
-    public Integer getSalary() {
+    public String getSalary() {
         return salary;
     }
 }
