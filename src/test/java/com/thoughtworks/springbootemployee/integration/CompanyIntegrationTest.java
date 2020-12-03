@@ -1,7 +1,9 @@
 package com.thoughtworks.springbootemployee.integration;
 
 import com.thoughtworks.springbootemployee.entity.Company;
+import com.thoughtworks.springbootemployee.entity.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +33,13 @@ public class CompanyIntegrationTest {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     @AfterEach
     void tearDown() {
         this.companyRepository.deleteAll();
+        this.employeeRepository.deleteAll();
     }
 
     @Test
@@ -211,5 +217,26 @@ public class CompanyIntegrationTest {
         //then
         this.mockMvc.perform(delete("/companies/" + addedCompany.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_employees_when_get_employees_given_found_id() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 20, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.save(employee);
+
+        Company company = new Company("Company");
+        company.addEmployee(addedEmployee);
+        Company addedCompany = this.companyRepository.save(company);
+
+        //when
+        //then
+        this.mockMvc.perform(get("/companies/" + addedCompany.getId() + "/employees"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(addedEmployee.getId()))
+                .andExpect(jsonPath("$[0].name").value("Sam"))
+                .andExpect(jsonPath("$[0].age").value(20))
+                .andExpect(jsonPath("$[0].gender").value("Male"))
+                .andExpect(jsonPath("$[0].salary").value(20000));
     }
 }
