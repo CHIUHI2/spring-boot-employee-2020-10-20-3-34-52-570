@@ -74,4 +74,20 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$[1].employeesNumber").value(0))
                 .andExpect(jsonPath("$[1].employees").isEmpty());
     }
+
+    @Test
+    void should_return_company_when_get_one_given_found_company_id() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+
+        //when
+        //then
+        this.mockMvc.perform(get("/companies/" + addedCompany.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(addedCompany.getId()))
+                .andExpect(jsonPath("$.companyName").value("Company"))
+                .andExpect(jsonPath("$.employeesNumber").value(0))
+                .andExpect(jsonPath("$.employees").isEmpty());
+    }
 }
