@@ -115,7 +115,7 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    void should_return_employee_when_get_one_given_found_employee() throws Exception {
+    void should_return_employee_when_get_one_given_found_employee_id() throws Exception {
         //given
         Employee employee = new Employee("Sam", 18, "Male", 20000);
         Employee addedEmployee = this.employeeRepository.save(employee);
@@ -124,7 +124,7 @@ public class EmployeeIntegrationTest {
         //then
         this.mockMvc.perform(get("/employees/" + addedEmployee.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isString())
+                .andExpect(jsonPath("$.id").value(addedEmployee.getId()))
                 .andExpect(jsonPath("$.name").value("Sam"))
                 .andExpect(jsonPath("$.age").value(18))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -132,7 +132,7 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    void should_return_404_when_get_one_given_not_found_employee() throws Exception {
+    void should_return_404_when_get_one_given_not_found_employee_id() throws Exception {
         //given
         Employee employee = new Employee("Sam", 18, "Male", 20000);
         Employee addedEmployee = this.employeeRepository.save(employee);
