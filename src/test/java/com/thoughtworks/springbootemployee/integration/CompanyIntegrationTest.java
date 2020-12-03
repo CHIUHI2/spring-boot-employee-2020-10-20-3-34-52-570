@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -180,6 +181,21 @@ public class CompanyIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody.toString())
         ).andExpect(status().isNotFound());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(0, companies.size());
+    }
+
+    @Test
+    void should_return_204_when_delete_given_found_id() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+
+        //when
+        //then
+        this.mockMvc.perform(delete("/companies/" + addedCompany.getId()))
+                .andExpect(status().isNoContent());
 
         List<Company> companies = this.companyRepository.findAll();
         assertEquals(0, companies.size());
