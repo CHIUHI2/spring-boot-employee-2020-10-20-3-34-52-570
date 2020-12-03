@@ -36,8 +36,8 @@ public class EmployeeServiceTest {
     public void should_return_all_employees_when_get_all_given_all_employees() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("1", "Sam", "20", "Male", "20000"),
-                new Employee("2", "Ken", "20", "Male", "30000")
+                new Employee("Sam", 20, "Male", 200000),
+                new Employee("Ken", 20, "Male", 300000)
         );
 
         when(this.employeeRepository.findAll()).thenReturn(employees);
@@ -53,8 +53,8 @@ public class EmployeeServiceTest {
     public void should_return_all_male_employees_when_get_all_by_gender_given_all_employees() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("1", "Sam", "20", "Male", "20000"),
-                new Employee("2", "Ken", "20", "Male", "30000")
+                new Employee("Sam", 20, "Male", 200000),
+                new Employee("Ken", 20, "Male", 300000)
         );
 
         when(this.employeeRepository.findAllByGender("Male")).thenReturn(employees);
@@ -70,8 +70,8 @@ public class EmployeeServiceTest {
     public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_2_page_size_2() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("1", "Sam", "20", "Male", "20000"),
-                new Employee("2", "Ken", "20", "Male", "30000")
+                new Employee("Sam", 20, "Male", 200000),
+                new Employee("Ken", 20, "Male", 300000)
         );
 
         Pageable pagable = PageRequest.of(2,2);
@@ -90,7 +90,7 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_correct_employee_when_find_employee_by_id_given_found_id() {
         //given
-        Optional<Employee> employee = Optional.of(new Employee("1", "Sam", "20", "Male", "20000"));
+        Optional<Employee> employee = Optional.of(new Employee("Sam", 20, "Male", 200000));
 
         when(this.employeeRepository.findById("1")).thenReturn(employee);
 
@@ -116,15 +116,14 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_correct_employee_when_add_given_not_existed_employee() {
         //given
-        Employee employee = new Employee("1", "Sam", "20", "Male", "20000");
+        Employee employee = new Employee("Sam", 20, "Male", 200000);
 
-        when(this.employeeRepository.save(employee)).thenReturn(employee);
+        when(this.employeeRepository.insert(employee)).thenReturn(employee);
 
         //when
         Employee returnedEmployees = this.employeeService.add(employee);
 
         //then
-        assertEquals(employee.getId(), returnedEmployees.getId());
         assertEquals(employee.getAge(), returnedEmployees.getAge());
         assertEquals(employee.getGender(), returnedEmployees.getGender());
         assertEquals(employee.getName(), returnedEmployees.getName());
@@ -134,7 +133,7 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_null_when_add_given_existed_employee() {
         //given
-        Employee employee = new Employee("1", "Sam", "20", "Male", "20000");
+        Employee employee = new Employee("Sam", 20, "Male", 20);
 
         when(this.employeeRepository.insert(employee)).thenReturn(null);
 
@@ -148,9 +147,9 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_correct_employee_when_update_given_found_employee() {
         //given
-        Employee employee = new Employee("1", "Sam", "20", "Male", "20000");
+        Employee employee = new Employee("Sam", 20, "Male", 200000);
 
-        when(this.employeeRepository.findById("1")).thenReturn(Optional.of(employee));
+        when(this.employeeRepository.existsById("1")).thenReturn(true);
         when(this.employeeRepository.save(employee)).thenReturn(employee);
 
         //when
@@ -167,9 +166,9 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_null_when_update_given_not_found_employee() {
         //given
-        Employee employee = new Employee("1", "Sam", "20", "Male", "20000");
+        Employee employee = new Employee("Sam", 20, "Male", 200000);
 
-        when(this.employeeRepository.findById("1")).thenReturn(Optional.empty());
+        when(this.employeeRepository.existsById("1")).thenReturn(false);
 
         //when
         Employee returnedEmployee = employeeService.update("1", employee);
@@ -181,9 +180,9 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_true_when_delete_given_found_id() {
         //given
-        Employee employee = new Employee("1", "Sam", "20", "Male", "20000");
+        Employee employee = new Employee("Sam", 20, "Male", 200000);
 
-        when(this.employeeRepository.findById("1")).thenReturn(Optional.of(employee));
+        when(this.employeeRepository.existsById("1")).thenReturn(true);
 
         //when
         boolean result = employeeService.delete("1");
@@ -195,7 +194,7 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_false_when_delete_given_not_found_id() {
         //given
-        when(this.employeeRepository.findById("1")).thenReturn(Optional.empty());
+        when(this.employeeRepository.existsById("1")).thenReturn(false);
 
         //when
         boolean result = employeeService.delete("1");

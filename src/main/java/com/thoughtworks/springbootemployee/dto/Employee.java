@@ -1,21 +1,21 @@
 package com.thoughtworks.springbootemployee.dto;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Document
 public class Employee {
-    @MongoId
+    @MongoId(FieldType.OBJECT_ID)
     private String id;
     private String name;
-    private String age;
+    private Integer age;
     private String gender;
-    private String salary;
+    private Integer salary;
 
     public Employee() {}
 
-    public Employee(String id, String name, String age, String gender, String salary) {
-        this.id = id;
+    public Employee(String name, Integer age, String gender, Integer salary) {
         this.name = name;
         this.age = age;
         this.gender = gender;
@@ -34,7 +34,7 @@ public class Employee {
         return name;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -42,7 +42,7 @@ public class Employee {
         return gender;
     }
 
-    public String getSalary() {
+    public Integer getSalary() {
         return salary;
     }
 }
