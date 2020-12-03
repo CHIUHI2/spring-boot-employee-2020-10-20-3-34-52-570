@@ -3,14 +3,21 @@ package com.thoughtworks.springbootemployee.integration;
 import com.thoughtworks.springbootemployee.dto.Company;
 import com.thoughtworks.springbootemployee.dto.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -102,5 +109,29 @@ public class CompanyIntegrationTest {
         //then
         this.mockMvc.perform(get("/companies/" + addedCompany.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_added_company_when_add_given_company() throws Exception {
+        //given
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("companyName", "Company");
+
+        //when
+        //then
+        this.mockMvc.perform(post("/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isString())
+                .andExpect(jsonPath("$.companyName").value("Company"))
+                .andExpect(jsonPath("$.employeesNumber").value(0))
+                .andExpect(jsonPath("$.employees").isEmpty());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(1, companies.size());
+        assertEquals("Company", companies.get(0).getCompanyName());
+        assertEquals(0, companies.get(0).getEmployeesNumber());
+        assertEquals(new ArrayList(), companies.get(0).getEmployees());
     }
 }
