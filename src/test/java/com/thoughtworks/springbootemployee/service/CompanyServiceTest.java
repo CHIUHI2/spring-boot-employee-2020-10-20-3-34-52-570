@@ -37,8 +37,8 @@ public class CompanyServiceTest {
     void should_return_all_companies_when_get_all_given_all_companies() {
         //given
         List<Company> expectedCompanies = Arrays.asList(
-            new Company("1", "Company1"),
-            new Company("2", "Company2")
+            new Company("Company1"),
+            new Company("Company2")
         );
 
         when(this.companyRepository.findAll()).thenReturn(expectedCompanies);
@@ -53,7 +53,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_company_when_find_company_by_id_given_found_id() {
         //given
-        Optional<Company> company = Optional.of(new Company("1", "Company1"));
+        Optional<Company> company = Optional.of(new Company("Company1"));
 
         when(this.companyRepository.findById("1")).thenReturn(company);
 
@@ -79,7 +79,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_employees_when_find_company_employees_by_id_given_found_id() {
         //given
-        Company company = new Company("1", "Company1");
+        Company company = new Company("Company1");
 
         Employee employee1 = new Employee("Sam", 20, "Male", 200000);
         company.addEmployee(employee1);
@@ -112,8 +112,8 @@ public class CompanyServiceTest {
     void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
         //given
         List<Company> companies = Arrays.asList(
-                new Company("3", "Company3"),
-                new Company("4", "Company4")
+                new Company("Company1"),
+                new Company("Company2")
         );
 
         Pageable pageable = PageRequest.of(2, 2);
@@ -131,7 +131,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_company_when_add_given_not_existed_company() {
         //given
-        Company company = new Company("1", "Company1");
+        Company company = new Company("Company1");
 
         Employee employee = new Employee("Ken", 20, "Male", 200000);
         company.addEmployee(employee);
@@ -150,7 +150,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_null_when_add_given_existed_company() {
         //given
-        Company company = new Company("1", "Company1");
+        Company company = new Company("Company1");
 
         when(this.companyRepository.insert(company)).thenReturn(null);
 
@@ -164,7 +164,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_correct_company_when_update_given_found_company() {
         //given
-        Company company = new Company("1", "Company1");
+        Company company = new Company("Company1");
 
         when(this.companyRepository.existsById("1")).thenReturn(true);
         when(this.companyRepository.save(company)).thenReturn(company);
@@ -181,7 +181,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_null_when_update_given_not_found_company() {
         //given
-        Company company = new Company("1", "Company1");
+        Company company = new Company("Company1");
 
         when(this.companyRepository.existsById("1")).thenReturn(false);
 

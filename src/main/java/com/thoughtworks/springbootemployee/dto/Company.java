@@ -20,8 +20,7 @@ public class Company {
         this.employeesNumber = 0;
     }
 
-    public Company(String id, String companyName) {
-        this.id = id;
+    public Company(String companyName) {
         this.companyName = companyName;
         this.employees = new ArrayList<>();
         this.employeesNumber = 0;
