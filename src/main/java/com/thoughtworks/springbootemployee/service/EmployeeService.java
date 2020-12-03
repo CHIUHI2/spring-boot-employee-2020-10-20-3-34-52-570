@@ -12,16 +12,8 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> findAll() {
-        return this.employeeRepository.findAll();
-    }
-
-    public List<Employee> findEmployeesByGender(String gender) {
-        return this.employeeRepository.findEmployeesByGender(gender);
-    }
-
-    public List<Employee> findEmployeesWithPagination(int pageIndex, int pageSize) {
-        return this.employeeRepository.findEmployeesWithPagination(pageIndex, pageSize);
+    public List<Employee> findAll(String gender, Integer page, Integer pageSize) {
+        return this.employeeRepository.findAll(gender, page, pageSize);
     }
 
     public Employee findEmployeeById(int id) {

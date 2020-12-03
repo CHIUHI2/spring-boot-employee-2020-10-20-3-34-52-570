@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,10 +38,11 @@ public class EmployeeServiceTest {
                 new Employee(2, "Ken", 20, "Male", 30000)
         );
 
-        when(this.employeeRepository.findAll()).thenReturn(employees);
+        when(this.employeeRepository.getEmployees()).thenReturn(employees);
+        when(this.employeeRepository.findAll(null, null, null)).thenCallRealMethod();
 
         //when
-        List<Employee> returnedEmployees = this.employeeService.findAll();
+        List<Employee> returnedEmployees = this.employeeService.findAll(null, null, null);
 
         //then
         assertEquals(employees, returnedEmployees);
@@ -55,11 +55,11 @@ public class EmployeeServiceTest {
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
         Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
 
-        when(this.employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3));
-        when(this.employeeRepository.findEmployeesByGender(any())).thenCallRealMethod();
+        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
+        when(this.employeeRepository.findAll("Male", null, null)).thenCallRealMethod();
 
         //when
-        List<Employee> returnedEmployees = this.employeeService.findEmployeesByGender("Male");
+        List<Employee> returnedEmployees = this.employeeService.findAll("Male", null, null);
 
         //then
         assertEquals(Arrays.asList(employee1, employee2), returnedEmployees);
@@ -73,11 +73,11 @@ public class EmployeeServiceTest {
         Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
         Employee employee4 = new Employee(4, "Winnie", 20, "Female", 250000);
 
-        when(this.employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3, employee4));
-        when(this.employeeRepository.findEmployeesWithPagination(2, 2)).thenCallRealMethod();
+        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3, employee4));
+        when(this.employeeRepository.findAll(null, 2, 2)).thenCallRealMethod();
 
         //when
-        List<Employee> returnedEmployees = this.employeeService.findEmployeesWithPagination(2, 2);
+        List<Employee> returnedEmployees = this.employeeService.findAll(null, 2, 2);
 
         //then
         assertEquals(Arrays.asList(employee3, employee4), returnedEmployees);
@@ -90,7 +90,7 @@ public class EmployeeServiceTest {
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
         Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
 
-        when(this.employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3));
+        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
         when(this.employeeRepository.findEmployeeById(1)).thenCallRealMethod();
 
         //when
@@ -107,7 +107,7 @@ public class EmployeeServiceTest {
         Employee employee2 = new Employee(2, "Ken", 20, "Male", 30000);
         Employee employee3 = new Employee(3, "Anna", 20, "Female", 250000);
 
-        when(this.employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2, employee3));
+        when(this.employeeRepository.getEmployees()).thenReturn(Arrays.asList(employee1, employee2, employee3));
         when(this.employeeRepository.findEmployeeById(4)).thenCallRealMethod();
 
         //when

@@ -28,18 +28,12 @@ public class EmployeeController {
     List<Employee> employees = new ArrayList<>();
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAll() {
-        return ResponseEntity.ok(this.employeeService.findAll());
-    }
-
-    @GetMapping(params = {"gender"})
-    public ResponseEntity<List<Employee>> getAllByGender(@RequestParam("gender") String gender) {
-        return ResponseEntity.ok(this.employeeService.findEmployeesByGender(gender));
-    }
-
-    @GetMapping(params = {"page", "pageSize"})
-    public ResponseEntity<List<Employee>> getAllWithPagination(@RequestParam("page") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
-        return ResponseEntity.ok(this.employeeService.findEmployeesWithPagination(pageIndex, pageSize));
+    public ResponseEntity<List<Employee>> getAll(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize
+    ) {
+        return ResponseEntity.ok(this.employeeService.findAll(gender, page, pageSize));
     }
 
     @GetMapping("/{id}")

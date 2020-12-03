@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.dto.Employee;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,27 +12,41 @@ import java.util.stream.Collectors;
 public class EmployeeRepository {
     private final List<Employee> employees = new ArrayList<>();
 
-    public List<Employee> findAll() {
+    public List<Employee> getEmployees() {
         return this.employees;
     }
 
-    public List<Employee> findEmployeesByGender(String gender) {
-        return this.findAll().stream()
+    public List<Employee> findAll(String gender, Integer page, Integer pageSize) {
+        List<Employee> employees = this.getEmployees();
+
+        if(Strings.isNotEmpty(gender)) {
+            employees = this.filterByGender(gender, employees);
+        }
+
+        if(page != null && pageSize != null) {
+            employees = this.doPagination(page, pageSize, employees);
+        }
+
+        return employees;
+    }
+
+    private List<Employee> filterByGender(String gender, List<Employee> employees) {
+        return employees.stream()
                 .filter(employee -> gender.equalsIgnoreCase(employee.getGender()))
                 .collect(Collectors.toList());
     }
 
-    public List<Employee> findEmployeesWithPagination(int pageIndex, int pageSize) {
-        int itemAmountToBeSkip = (pageIndex - 1) * pageSize;
+    private List<Employee> doPagination(Integer page, Integer pageSize, List<Employee> employees) {
+        int itemAmountToBeSkip = (page - 1) * pageSize;
 
-        return  this.findAll().stream()
+        return employees.stream()
                 .skip(itemAmountToBeSkip)
                 .limit(pageSize)
                 .collect(Collectors.toList());
     }
 
     public Employee findEmployeeById(int id) {
-        return  this.findAll().stream()
+        return  this.getEmployees().stream()
                 .filter(employee -> employee.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -52,7 +67,7 @@ public class EmployeeRepository {
         boolean isDeleted =  this.employees.removeIf(employee -> employee.getId().equals(id));
 
         if(isDeleted) {
-            this.findAll().add(requestEmployee);
+            this.getEmployees().add(requestEmployee);
             return requestEmployee;
         }
         else {
