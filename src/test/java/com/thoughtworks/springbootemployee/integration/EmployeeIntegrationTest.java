@@ -35,14 +35,14 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    public void should_return_all_employees_when_get_all_given_employees() throws Exception {
+    void should_return_all_employees_when_get_all_given_employees() throws Exception {
         //given
         Employee employee = new Employee("Sam", 18, "Male", 20000);
-        employeeRepository.save(employee);
+        this.employeeRepository.save(employee);
 
         //when
         //then
-        mockMvc.perform(get("/employees"))
+        this.mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
@@ -52,7 +52,36 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    public void should_return_employee_when_add_given_employee() throws Exception {
+    void should_return_all_male_employees_when_get_all_by_gender_given_employees_and_required_gender_male() throws Exception {
+        //given
+        Employee employee1 = new Employee("Sam", 18, "Male", 20000);
+        this.employeeRepository.save(employee1);
+
+        Employee employee2 = new Employee("Ken", 20, "Male", 30000);
+        this.employeeRepository.save(employee2);
+
+        Employee employee3 = new Employee("Anna", 18, "Female", 20000);
+        this.employeeRepository.save(employee3);
+
+        //when
+        //then
+        this.mockMvc.perform(get("/employees")
+                    .param("gender", "Male")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").isString())
+                .andExpect(jsonPath("$[0].name").value("Sam"))
+                .andExpect(jsonPath("$[0].age").value(18))
+                .andExpect(jsonPath("$[0].gender").value("Male"))
+                .andExpect(jsonPath("$[0].salary").value(20000))
+                .andExpect(jsonPath("$[1].id").isString())
+                .andExpect(jsonPath("$[1].name").value("Ken"))
+                .andExpect(jsonPath("$[1].age").value(20))
+                .andExpect(jsonPath("$[1].gender").value("Male"))
+                .andExpect(jsonPath("$[1].salary").value(30000));
+    }
+
+    @Test
+    void should_return_employee_when_add_given_employee() throws Exception {
         //given
         JSONObject requestBody = new JSONObject();
         requestBody.put("name", "Sam");
@@ -62,7 +91,7 @@ public class EmployeeIntegrationTest {
 
         //when
         //then
-        mockMvc.perform(post("/employees")
+        this.mockMvc.perform(post("/employees")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody.toString())
                 ).andExpect(status().isCreated())
