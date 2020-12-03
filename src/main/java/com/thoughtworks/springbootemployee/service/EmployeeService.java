@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.EmployeeNotFoundException;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,9 +36,9 @@ public class EmployeeService {
         return this.employeeRepository.insert(employee);
     }
 
-    public Employee replace(String id, Employee requestEmployee) {
+    public Employee replace(String id, Employee requestEmployee) throws EmployeeNotFoundException {
         if(!this.employeeRepository.existsById(id)) {
-            return null;
+            throw new EmployeeNotFoundException();
         }
 
         requestEmployee.setId(id);
@@ -45,13 +46,11 @@ public class EmployeeService {
         return this.employeeRepository.save(requestEmployee);
     }
 
-    public boolean delete(String id) {
+    public void delete(String id) throws EmployeeNotFoundException {
         if(!this.employeeRepository.existsById(id)) {
-            return false;
+            throw new EmployeeNotFoundException();
         }
 
         this.employeeRepository.deleteById(id);
-
-        return true;
     }
 }

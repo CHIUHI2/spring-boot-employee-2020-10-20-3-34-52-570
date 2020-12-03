@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,9 +39,9 @@ public class CompanyService {
         return this.companyRepository.insert(company);
     }
 
-    public Company replace(String id, Company company) {
+    public Company replace(String id, Company company) throws CompanyNotFoundException {
         if(!this.companyRepository.existsById(id)) {
-            return null;
+            throw new CompanyNotFoundException();
         }
 
         company.setId(id);
@@ -48,13 +49,11 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public boolean delete(String id) {
+    public void delete(String id) throws CompanyNotFoundException {
         if(!this.companyRepository.existsById(id)) {
-            return false;
+            throw new CompanyNotFoundException();
         }
 
         this.companyRepository.deleteById(id);
-
-        return true;
     }
 }

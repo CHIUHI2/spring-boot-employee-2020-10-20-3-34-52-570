@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.EmployeeNotFoundException;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -102,7 +104,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_null_when_find_employee_by_id_given_not_found_id() {
+    public void should_return_nothing_when_find_employee_by_id_given_not_found_id() {
         //given
         when(this.employeeRepository.findById("1")).thenReturn(Optional.empty());
 
@@ -131,21 +133,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_null_when_add_given_existed_employee() {
-        //given
-        Employee employee = new Employee("Sam", 20, "Male", 20);
-
-        when(this.employeeRepository.insert(employee)).thenReturn(null);
-
-        //when
-        Employee returnedEmployee = this.employeeService.add(employee);
-
-        //then
-        assertNull(returnedEmployee);
-    }
-
-    @Test
-    public void should_return_correct_employee_when_update_given_found_employee() {
+    public void should_return_correct_employee_when_update_given_found_employee() throws EmployeeNotFoundException {
         //given
         Employee employee = new Employee("Sam", 20, "Male", 200000);
 
@@ -164,42 +152,40 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_null_when_update_given_not_found_employee() {
+    public void should_throw_employee_not_found_exception_when_update_given_not_found_employee() {
         //given
         Employee employee = new Employee("Sam", 20, "Male", 200000);
 
         when(this.employeeRepository.existsById("1")).thenReturn(false);
 
-        //when
-        Employee returnedEmployee = employeeService.replace("1", employee);
-
         //then
-        assertNull(returnedEmployee);
+        assertThrows(EmployeeNotFoundException.class, () -> {
+            //when
+            this.employeeService.replace("1", employee);
+        });
     }
 
     @Test
-    public void should_return_true_when_delete_given_found_id() {
+    public void should_call_employee_repository_delete_by_id_once_when_delete_given_found_id() throws EmployeeNotFoundException {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 200000);
-
         when(this.employeeRepository.existsById("1")).thenReturn(true);
 
         //when
-        boolean result = employeeService.delete("1");
+        this.employeeService.delete("1");
 
         //then
-        assertTrue(result);
+        verify(employeeRepository, times(1)).deleteById("1");
     }
 
     @Test
-    public void should_return_false_when_delete_given_not_found_id() {
+    public void should_throw_employee_not_found_exception_when_delete_given_not_found_id() {
         //given
         when(this.employeeRepository.existsById("1")).thenReturn(false);
 
-        //when
-        boolean result = employeeService.delete("1");
-
         //then
-        assertFalse(result);
+        assertThrows(EmployeeNotFoundException.class, () -> {
+            //when
+            this.employeeService.delete("1");
+        });
     }
 }

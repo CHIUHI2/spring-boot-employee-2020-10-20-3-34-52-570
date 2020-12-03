@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -65,7 +67,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_null_when_find_company_by_id_given_not_found_id() {
+    void should_return_nothing_when_find_company_by_id_given_not_found_id() {
         //given
         when(this.companyRepository.findById("1")).thenReturn(Optional.empty());
 
@@ -97,7 +99,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_null_when_find_company_employees_by_id_given_not_found_id() {
+    void should_return_nothing_when_find_company_employees_by_id_given_not_found_id() {
         //given
         when(this.companyRepository.findById("1")).thenReturn(Optional.empty());
 
@@ -148,21 +150,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_null_when_add_given_existed_company() {
-        //given
-        Company company = new Company("Company1");
-
-        when(this.companyRepository.insert(company)).thenReturn(null);
-
-        //when
-        Company returnedCompany = this.companyService.add(company);
-
-        //then
-        assertNull(returnedCompany);
-    }
-
-    @Test
-    void should_return_correct_company_when_update_given_found_company() {
+    void should_return_correct_company_when_update_given_found_company() throws CompanyNotFoundException {
         //given
         Company company = new Company("Company1");
 
@@ -179,40 +167,40 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_null_when_update_given_not_found_company() {
+    void should_throw_company_not_found_exception_when_update_given_not_found_company() {
         //given
         Company company = new Company("Company1");
 
         when(this.companyRepository.existsById("1")).thenReturn(false);
 
-        //when
-        Company returnedCompany = this.companyService.replace("1", company);
-
         //then
-        assertNull(returnedCompany);
+        assertThrows(CompanyNotFoundException.class, () -> {
+           //when
+            this.companyService.replace("1", company);
+        });
     }
 
     @Test
-    void should_return_true_when_delete_given_found_company() {
+    void should_call_company_repository_delete_by_id_once_when_delete_given_found_company() throws CompanyNotFoundException {
         //given
         when(this.companyRepository.existsById("1")).thenReturn(true);
 
         //when
-        boolean result = this.companyService.delete("1");
+        this.companyService.delete("1");
 
         //then
-        assertTrue(result);
+        verify(this.companyRepository, times(1)).deleteById("1");
     }
 
     @Test
-    void should_return_false_when_delete_given_not_found_company() {
+    void should_throw_company_not_found_exception_when_delete_given_not_found_company() {
         //given
         when(this.companyRepository.existsById("1")).thenReturn(false);
 
-        //when
-        boolean result = this.companyService.delete("1");
-
         //then
-        assertFalse(result);
+        assertThrows(CompanyNotFoundException.class, () -> {
+           //then
+            this.companyService.delete("1");
+        });
     }
 }

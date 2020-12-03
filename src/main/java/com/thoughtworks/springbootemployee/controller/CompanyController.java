@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -82,15 +83,25 @@ public class CompanyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Company> relace(@PathVariable String id, @RequestBody Company company) {
-        Company updatedCompany = this.companyService.replace(id, company);
+        try {
+            Company updatedCompany = this.companyService.replace(id, company);
 
-        return updatedCompany == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updatedCompany) ;
+            return ResponseEntity.ok(updatedCompany);
+        }
+        catch (CompanyNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean isDeleted = this.companyService.delete(id);
+        try {
+            this.companyService.delete(id);
 
-        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build() ;
+            return ResponseEntity.noContent().build();
+        }
+        catch (CompanyNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

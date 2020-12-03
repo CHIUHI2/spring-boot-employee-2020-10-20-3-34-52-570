@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.EmployeeNotFoundException;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -78,15 +79,25 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> replace(@PathVariable String id, @RequestBody Employee employee) {
-       Employee updatedEmployee = this.employeeService.replace(id, employee);
+        try {
+            Employee updatedEmployee = this.employeeService.replace(id, employee);
 
-       return updatedEmployee == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employee) ;
+            return ResponseEntity.ok(employee);
+        }
+        catch(EmployeeNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        boolean isDeleted = this.employeeService.delete(id);
+        try {
+            this.employeeService.delete(id);
 
-        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build() ;
+            return ResponseEntity.noContent().build();
+        }
+        catch(EmployeeNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
