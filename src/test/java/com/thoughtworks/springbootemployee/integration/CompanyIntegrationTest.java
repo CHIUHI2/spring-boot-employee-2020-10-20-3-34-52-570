@@ -90,4 +90,17 @@ public class CompanyIntegrationTest {
                 .andExpect(jsonPath("$.employeesNumber").value(0))
                 .andExpect(jsonPath("$.employees").isEmpty());
     }
+
+    @Test
+    void should_return_404_when_get_one_given_not_found_company_id() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+        this.companyRepository.deleteAll();
+
+        //when
+        //then
+        this.mockMvc.perform(get("/companies/" + addedCompany.getId()))
+                .andExpect(status().isNotFound());
+    }
 }
