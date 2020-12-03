@@ -49,8 +49,8 @@ public class EmployeeController {
             "page",
             "pageSize"
     })
-    public ResponseEntity<List<Employee>> getAllWithPagination(@RequestParam String page, @RequestParam String pageSize) {
-        Pageable pageable = PageRequest.of(Integer.parseInt(page), Integer.parseInt(pageSize));
+    public ResponseEntity<List<Employee>> getAllWithPagination(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         Page<Employee> employees = this.employeeService.findAllWithPagination(pageable);
 
         return ResponseEntity.ok(employees.getContent());

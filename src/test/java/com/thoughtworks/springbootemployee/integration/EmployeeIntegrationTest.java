@@ -2,7 +2,6 @@ package com.thoughtworks.springbootemployee.integration;
 
 import com.thoughtworks.springbootemployee.dto.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -68,6 +67,39 @@ public class EmployeeIntegrationTest {
         this.mockMvc.perform(get("/employees")
                     .param("gender", "Male")
                 ).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").isString())
+                .andExpect(jsonPath("$[0].name").value("Sam"))
+                .andExpect(jsonPath("$[0].age").value(18))
+                .andExpect(jsonPath("$[0].gender").value("Male"))
+                .andExpect(jsonPath("$[0].salary").value(20000))
+                .andExpect(jsonPath("$[1].id").isString())
+                .andExpect(jsonPath("$[1].name").value("Ken"))
+                .andExpect(jsonPath("$[1].age").value(20))
+                .andExpect(jsonPath("$[1].gender").value("Male"))
+                .andExpect(jsonPath("$[1].salary").value(30000));
+    }
+
+    @Test
+    void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_and_page_1_and_page_size_2() throws Exception {
+        //given
+        Employee employee1 = new Employee("Anna", 18, "Female", 20000);
+        this.employeeRepository.save(employee1);
+
+        Employee employee2 = new Employee("Yvonne", 19, "Female", 30000);
+        this.employeeRepository.save(employee2);
+
+        Employee employee3 = new Employee("Sam", 18, "Male", 20000);
+        this.employeeRepository.save(employee3);
+
+        Employee employee4 = new Employee("Ken", 20, "Male", 30000);
+        this.employeeRepository.save(employee4);
+
+        //when
+        //then
+        this.mockMvc.perform(get("/employees")
+                .param("page", "1")
+                .param("pageSize", "2")
+        ).andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
