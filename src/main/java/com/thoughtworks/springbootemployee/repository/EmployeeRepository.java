@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.repository;
 
-import com.thoughtworks.springbootemployee.dto.Employee;
+import com.thoughtworks.springbootemployee.entity.Employee;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

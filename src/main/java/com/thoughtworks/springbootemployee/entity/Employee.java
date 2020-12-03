@@ -1,5 +1,6 @@
-package com.thoughtworks.springbootemployee.dto;
+package com.thoughtworks.springbootemployee.entity;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;

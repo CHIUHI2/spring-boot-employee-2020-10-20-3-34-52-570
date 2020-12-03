@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.integration;
 
-import com.thoughtworks.springbootemployee.dto.Company;
+import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
