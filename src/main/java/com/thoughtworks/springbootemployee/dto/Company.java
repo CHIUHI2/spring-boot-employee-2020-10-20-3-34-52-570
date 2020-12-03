@@ -1,10 +1,16 @@
 package com.thoughtworks.springbootemployee.dto;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Document
 public class Company {
-    private Integer id;
+    @MongoId(FieldType.OBJECT_ID)
+    private String id;
     private String companyName;
     private Integer employeesNumber;
     private List<Employee> employees;
@@ -14,15 +20,19 @@ public class Company {
         this.employeesNumber = 0;
     }
 
-    public Company(Integer id, String companyName) {
+    public Company(String id, String companyName) {
         this.id = id;
         this.companyName = companyName;
         this.employees = new ArrayList<>();
         this.employeesNumber = 0;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCompanyName() {

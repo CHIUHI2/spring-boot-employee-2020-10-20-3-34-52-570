@@ -1,68 +1,7 @@
 package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.dto.Company;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Repository
-public class CompanyRepository {
-    List<Company> companies = new ArrayList<>();
-
-    public List<Company> findAll(Integer page, Integer pageSize) {
-        List<Company> companies = this.companies;
-
-        if(page != null && pageSize != null) {
-            companies = this.doPagination(page, pageSize, companies);
-        }
-
-        return companies;
-    }
-
-    private List<Company> doPagination(Integer page, Integer pageSize, List<Company> companies) {
-        int itemAmountToBeSkip = (page - 1) * pageSize;
-
-        return companies.stream()
-                .skip(itemAmountToBeSkip)
-                .limit(pageSize)
-                .collect(Collectors.toList());
-    }
-
-    public Company findCompanyById(Integer id) {
-        return this.companies.stream()
-                .filter(company -> company.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Company save(Company requestCompany) {
-        boolean isExisted = this.companies.stream()
-                .anyMatch(company -> company.getId().equals(requestCompany.getId()));
-
-        if(isExisted) {
-            return null;
-        }
-
-        this.companies.add(requestCompany);
-
-        return requestCompany;
-    }
-
-    public Company update(Integer id, Company requestCompany) {
-        boolean isDeleted =  this.companies.removeIf(company -> company.getId().equals(id));
-
-        if(isDeleted) {
-            this.companies.add(requestCompany);
-
-            return requestCompany;
-        }
-
-        return null;
-    }
-
-    public boolean delete(int id) {
-        return  this.companies.removeIf(company -> company.getId().equals(id));
-    }
+public interface CompanyRepository extends MongoRepository<Company, String> {
 }
