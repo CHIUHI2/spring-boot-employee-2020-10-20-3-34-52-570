@@ -40,7 +40,7 @@ public class CompanyServiceTest {
         );
 
         when(this.companyRepository.getCompanies()).thenReturn(expectedCompanies);
-        when(this.companyRepository.findAll(null, null)).thenReturn(expectedCompanies);
+        when(this.companyRepository.findAll(null, null)).thenCallRealMethod();
 
         //when
         List<Company> returnedCompanies = this.companyService.findAll(null, null);
