@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -82,8 +81,8 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> update(@PathVariable String id, @RequestBody Company company) {
-        Company updatedCompany = this.companyService.update(id, company);
+    public ResponseEntity<Company> relace(@PathVariable String id, @RequestBody Company company) {
+        Company updatedCompany = this.companyService.replace(id, company);
 
         return updatedCompany == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updatedCompany) ;
     }

@@ -170,7 +170,7 @@ public class CompanyServiceTest {
         when(this.companyRepository.save(company)).thenReturn(company);
 
         //when
-        Company returnedCompany = this.companyService.update("1", company);
+        Company returnedCompany = this.companyService.replace("1", company);
 
         //then
         assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
@@ -186,7 +186,7 @@ public class CompanyServiceTest {
         when(this.companyRepository.existsById("1")).thenReturn(false);
 
         //when
-        Company returnedCompany = this.companyService.update("1", company);
+        Company returnedCompany = this.companyService.replace("1", company);
 
         //then
         assertNull(returnedCompany);

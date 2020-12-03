@@ -38,7 +38,7 @@ public class CompanyService {
         return this.companyRepository.insert(company);
     }
 
-    public Company update(String id, Company company) {
+    public Company replace(String id, Company company) {
         if(!this.companyRepository.existsById(id)) {
             return null;
         }

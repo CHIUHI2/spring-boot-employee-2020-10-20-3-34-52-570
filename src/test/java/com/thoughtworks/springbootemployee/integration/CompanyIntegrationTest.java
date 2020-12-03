@@ -18,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,6 +133,36 @@ public class CompanyIntegrationTest {
         assertEquals(1, companies.size());
         assertEquals("Company", companies.get(0).getCompanyName());
         assertEquals(0, companies.get(0).getEmployeesNumber());
-        assertEquals(new ArrayList(), companies.get(0).getEmployees());
+        assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
     }
+
+    @Test
+    void should_return_updated_company_when_replace_given_found_id_and_company() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("companyName", "Company1");
+
+        //when
+        //then
+        this.mockMvc.perform(put("/companies/" + addedCompany.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(addedCompany.getId()))
+                .andExpect(jsonPath("$.companyName").value("Company1"))
+                .andExpect(jsonPath("$.employeesNumber").value(0))
+                .andExpect(jsonPath("$.employees").isEmpty());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(1, companies.size());
+        assertEquals(addedCompany.getId(), companies.get(0).getId());
+        assertEquals("Company1", companies.get(0).getCompanyName());
+        assertEquals(0, companies.get(0).getEmployeesNumber());
+        assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
+    }
+
+
 }
