@@ -1,7 +1,6 @@
 package com.thoughtworks.springbootemployee.integration;
 
 import com.thoughtworks.springbootemployee.dto.Company;
-import com.thoughtworks.springbootemployee.dto.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -199,5 +198,18 @@ public class CompanyIntegrationTest {
 
         List<Company> companies = this.companyRepository.findAll();
         assertEquals(0, companies.size());
+    }
+
+    @Test
+    void should_return_404_when_delete_given_found_id() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.save(company);
+        this.companyRepository.deleteAll();
+
+        //when
+        //then
+        this.mockMvc.perform(delete("/companies/" + addedCompany.getId()))
+                .andExpect(status().isNotFound());
     }
 }
