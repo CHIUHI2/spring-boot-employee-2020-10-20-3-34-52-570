@@ -36,23 +36,22 @@ public class EmployeeService {
     }
 
     public Employee update(String id, Employee requestEmployee) {
-        Optional<Employee> employee = this.employeeRepository.findById(id);
-
-        if(!employee.isPresent()) {
+        if(!this.employeeRepository.existsById(id)) {
             return null;
         }
+
+        requestEmployee.setId(id);
 
         return this.employeeRepository.save(requestEmployee);
     }
 
     public boolean delete(String id) {
-        Optional<Employee> employee = this.employeeRepository.findById(id);
-
-        if(!employee.isPresent()) {
+        if(!this.employeeRepository.existsById(id)) {
             return false;
         }
 
         this.employeeRepository.deleteById(id);
+
         return true;
     }
 }
