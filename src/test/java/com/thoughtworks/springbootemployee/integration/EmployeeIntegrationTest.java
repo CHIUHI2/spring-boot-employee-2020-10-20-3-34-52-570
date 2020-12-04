@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,6 +46,7 @@ public class EmployeeIntegrationTest {
         //then
         this.mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
@@ -69,6 +71,7 @@ public class EmployeeIntegrationTest {
         this.mockMvc.perform(get("/employees")
                     .param("gender", "Male")
                 ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
@@ -99,9 +102,10 @@ public class EmployeeIntegrationTest {
         //when
         //then
         this.mockMvc.perform(get("/employees")
-                .param("page", "1")
-                .param("pageSize", "2")
-        ).andExpect(status().isOk())
+                    .param("page", "1")
+                    .param("pageSize", "2")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
