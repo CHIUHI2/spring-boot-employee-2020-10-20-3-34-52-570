@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,6 +53,7 @@ public class CompanyIntegrationTest {
         //then
         this.mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].companyName").value("Company"))
                 .andExpect(jsonPath("$[0].employeesNumber").value(0))
@@ -76,9 +78,10 @@ public class CompanyIntegrationTest {
         //when
         //then
         this.mockMvc.perform(get("/companies")
-                .param("page", "1")
-                .param("pageSize", "2")
-        ).andExpect(status().isOk())
+                        .param("page", "1")
+                        .param("pageSize", "2")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].companyName").value("Company3"))
                 .andExpect(jsonPath("$[0].employeesNumber").value(0))
@@ -127,9 +130,9 @@ public class CompanyIntegrationTest {
         //when
         //then
         this.mockMvc.perform(post("/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody.toString())
-        ).andExpect(status().isCreated())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody.toString())
+                ).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.companyName").value("Company"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
@@ -154,9 +157,9 @@ public class CompanyIntegrationTest {
         //when
         //then
         this.mockMvc.perform(put("/companies/" + addedCompany.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody.toString())
-        ).andExpect(status().isOk())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody.toString())
+                ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(addedCompany.getId()))
                 .andExpect(jsonPath("$.companyName").value("Company1"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
@@ -233,6 +236,7 @@ public class CompanyIntegrationTest {
         //then
         this.mockMvc.perform(get("/companies/" + addedCompany.getId() + "/employees"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(addedEmployee.getId()))
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(20))
