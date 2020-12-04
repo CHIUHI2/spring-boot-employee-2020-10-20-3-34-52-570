@@ -149,7 +149,7 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    void should_return_added_employee_when_add_given_employee() throws Exception {
+    void should_return_added_employee_when_add_given_not_existed_employee() throws Exception {
         //given
         JSONObject requestBody = new JSONObject();
         requestBody.put("name", "Sam");
@@ -175,6 +175,30 @@ public class EmployeeIntegrationTest {
         assertEquals(18, employees.get(0).getAge());
         assertEquals("Male", employees.get(0).getGender());
         assertEquals(20000, employees.get(0).getSalary());
+    }
+
+    @Test
+    void should_return_409_when_add_given_existed_employee_id() throws Exception {
+        //given
+        Employee employee = new Employee("Sam", 20, "Male", 20000);
+        Employee addedEmployee = this.employeeRepository.insert(employee);
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("id", addedEmployee.getId());
+        requestBody.put("name", "Ken");
+        requestBody.put("age", 20);
+        requestBody.put("gender", "Male");
+        requestBody.put("salary", 20000);
+
+        //when
+        //then
+        this.mockMvc.perform(post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isConflict());
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(1, employees.size());
     }
 
     @Test

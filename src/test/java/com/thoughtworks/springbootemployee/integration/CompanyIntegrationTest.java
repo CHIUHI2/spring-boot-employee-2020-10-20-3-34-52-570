@@ -122,7 +122,7 @@ public class CompanyIntegrationTest {
     }
 
     @Test
-    void should_return_added_company_when_add_given_company() throws Exception {
+    void should_return_added_company_when_add_given_not_existed_company() throws Exception {
         //given
         JSONObject requestBody = new JSONObject();
         requestBody.put("companyName", "Company");
@@ -143,6 +143,27 @@ public class CompanyIntegrationTest {
         assertEquals("Company", companies.get(0).getCompanyName());
         assertEquals(0, companies.get(0).getEmployeesNumber());
         assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
+    }
+
+    @Test
+    void should_return_409_when_add_given_existed_company_id() throws Exception {
+        //given
+        Company company = new Company("Company");
+        Company addedCompany = this.companyRepository.insert(company);
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("id", addedCompany.getId());
+        requestBody.put("companyName", "Company");
+
+        //when
+        //then
+        this.mockMvc.perform(post("/companies")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody.toString())
+                ).andExpect(status().isConflict());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(1, companies.size());
     }
 
     @Test

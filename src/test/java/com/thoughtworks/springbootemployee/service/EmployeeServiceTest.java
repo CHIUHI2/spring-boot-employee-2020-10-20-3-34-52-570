@@ -89,29 +89,29 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_correct_employee_when_find_employee_by_id_given_found_id() {
+    public void should_return_correct_employee_when_find_employee_by_id_given_found_id() throws EmployeeNotFoundException {
         //given
-        Optional<Employee> employee = Optional.of(new Employee("Sam", 20, "Male", 200000));
+        Employee employee = new Employee("Sam", 20, "Male", 200000);
 
-        when(this.employeeRepository.findById("1")).thenReturn(employee);
+        when(this.employeeRepository.findById("1")).thenReturn(Optional.of(employee));
 
         //when
-        Optional<Employee> returnedEmployee = this.employeeService.findEmployeeById("1");
+        Employee returnedEmployee = this.employeeService.findEmployeeById("1");
 
         //then
         assertEquals(employee, returnedEmployee);
     }
 
     @Test
-    public void should_return_nothing_when_find_employee_by_id_given_not_found_id() {
+    public void should_throw_employee_not_found_exception_when_find_employee_by_id_given_not_found_id() {
         //given
         when(this.employeeRepository.findById("1")).thenReturn(Optional.empty());
 
-        //when
-        Optional<Employee> returnedEmployee = this.employeeService.findEmployeeById("1");
-
         //then
-        assertEquals(Optional.empty(), returnedEmployee);
+        assertThrows(EmployeeNotFoundException.class, () -> {
+            //when
+            this.employeeService.findEmployeeById("1");
+        });
     }
 
     @Test

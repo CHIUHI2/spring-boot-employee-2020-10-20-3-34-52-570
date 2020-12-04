@@ -28,8 +28,14 @@ public class EmployeeService {
         return this.employeeRepository.findAll(pageable);
     }
 
-    public Optional<Employee> findEmployeeById(String id) {
-        return this.employeeRepository.findById(id);
+    public Employee findEmployeeById(String id) throws EmployeeNotFoundException {
+        Optional<Employee> employee = this.employeeRepository.findById(id);
+
+        if(!employee.isPresent()) {
+            throw new EmployeeNotFoundException();
+        }
+
+        return employee.get();
     }
 
     public Employee add(Employee employee) {

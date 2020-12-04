@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -54,19 +55,15 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getOne(@PathVariable String id) {
-        Optional<Employee> employee = this.employeeService.findEmployeeById(id);
+    public ResponseEntity<Employee> getOne(@PathVariable String id) throws EmployeeNotFoundException {
+        Employee employee = this.employeeService.findEmployeeById(id);
 
-        return employee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(employee);
     }
 
     @PostMapping
     public ResponseEntity<Employee> add(@RequestBody Employee employee) {
         Employee addedEmployee = this.employeeService.add(employee);
-
-        if(addedEmployee == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -78,26 +75,16 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> replace(@PathVariable String id, @RequestBody Employee employee) {
-        try {
-            Employee updatedEmployee = this.employeeService.replace(id, employee);
+    public ResponseEntity<Employee> replace(@PathVariable String id, @RequestBody Employee employee) throws EmployeeNotFoundException {
+        Employee updatedEmployee = this.employeeService.replace(id, employee);
 
-            return ResponseEntity.ok(employee);
-        }
-        catch(EmployeeNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(employee);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        try {
-            this.employeeService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) throws EmployeeNotFoundException {
+        this.employeeService.delete(id);
 
-            return ResponseEntity.noContent().build();
-        }
-        catch(EmployeeNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.noContent().build();
     }
 }

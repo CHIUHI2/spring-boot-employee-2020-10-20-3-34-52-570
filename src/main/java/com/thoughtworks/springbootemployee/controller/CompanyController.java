@@ -58,24 +58,15 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/employees")
-    public ResponseEntity<List<Employee>> getEmployees(@PathVariable String id) {
-        try {
-            List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
+    public ResponseEntity<List<Employee>> getEmployees(@PathVariable String id) throws CompanyNotFoundException {
+        List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
 
-            return ResponseEntity.ok(employees);
-        }
-        catch(CompanyNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(employees);
     }
 
     @PostMapping
     public ResponseEntity<Company> add(@RequestBody Company company) {
         Company addedCompany = this.companyService.add(company);
-
-        if(addedCompany == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -87,26 +78,16 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> relace(@PathVariable String id, @RequestBody Company company) {
-        try {
-            Company updatedCompany = this.companyService.replace(id, company);
+    public ResponseEntity<Company> relace(@PathVariable String id, @RequestBody Company company) throws CompanyNotFoundException {
+        Company updatedCompany = this.companyService.replace(id, company);
 
-            return ResponseEntity.ok(updatedCompany);
-        }
-        catch (CompanyNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(updatedCompany);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        try {
-            this.companyService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable String id) throws CompanyNotFoundException {
+        this.companyService.delete(id);
 
-            return ResponseEntity.noContent().build();
-        }
-        catch (CompanyNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.noContent().build();
     }
 }
