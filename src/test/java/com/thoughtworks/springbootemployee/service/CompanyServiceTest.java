@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -79,7 +78,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_correct_employees_when_find_company_employees_by_id_given_found_id() {
+    void should_return_correct_employees_when_find_company_employees_by_id_given_found_id() throws CompanyNotFoundException {
         //given
         Company company = new Company("Company1");
 
@@ -99,26 +98,26 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_nothing_when_find_company_employees_by_id_given_not_found_id() {
+    void should_throw_company_not_found_exception_when_find_company_employees_by_id_given_not_found_id() {
         //given
         when(this.companyRepository.findById("1")).thenReturn(Optional.empty());
 
-        //when
-        List<Employee> employees = this.companyService.findCompanyEmployeesById("1");
-
         //then
-        assertNull(employees);
+        assertThrows(CompanyNotFoundException.class, () -> {
+            //when
+            this.companyService.findCompanyEmployeesById("1");
+        });
     }
 
     @Test
-    void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_2_page_size_2() {
+    void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_0_page_size_2() {
         //given
         List<Company> companies = Arrays.asList(
                 new Company("Company1"),
                 new Company("Company2")
         );
 
-        Pageable pageable = PageRequest.of(2, 2);
+        Pageable pageable = PageRequest.of(0, 2);
         Page<Company> companyPage = new PageImpl<>(companies, pageable, companies.size());
 
         when(this.companyRepository.findAll(pageable)).thenReturn(companyPage);
@@ -150,7 +149,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_correct_company_when_update_given_found_company() throws CompanyNotFoundException {
+    void should_return_correct_company_when_replace_given_found_company() throws CompanyNotFoundException {
         //given
         Company company = new Company("Company1");
 
@@ -167,7 +166,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_throw_company_not_found_exception_when_update_given_not_found_company() {
+    void should_throw_company_not_found_exception_when_replace_given_not_found_company() {
         //given
         Company company = new Company("Company1");
 

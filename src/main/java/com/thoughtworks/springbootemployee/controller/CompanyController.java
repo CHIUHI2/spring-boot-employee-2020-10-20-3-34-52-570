@@ -59,9 +59,14 @@ public class CompanyController {
 
     @GetMapping("/{id}/employees")
     public ResponseEntity<List<Employee>> getEmployees(@PathVariable String id) {
-        List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
+        try {
+            List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
 
-        return employees == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(employees);
+            return ResponseEntity.ok(employees);
+        }
+        catch(CompanyNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping

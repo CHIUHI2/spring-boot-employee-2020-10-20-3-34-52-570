@@ -29,10 +29,10 @@ public class CompanyService {
         return this.companyRepository.findById(id);
     }
 
-    public List<Employee> findCompanyEmployeesById(String id) {
+    public List<Employee> findCompanyEmployeesById(String id) throws CompanyNotFoundException {
         Optional<Company> company = this.companyRepository.findById(id);
 
-        return company.map(Company::getEmployees).orElse(null);
+        return company.map(Company::getEmployees).orElseThrow(CompanyNotFoundException::new);
     }
 
     public Company add(Company company) {
