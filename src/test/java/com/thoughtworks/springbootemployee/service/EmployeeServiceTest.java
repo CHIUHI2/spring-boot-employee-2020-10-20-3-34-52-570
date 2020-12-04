@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -69,14 +68,14 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_2_page_size_2() {
+    public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_0_page_size_2() {
         //given
         List<Employee> employees = Arrays.asList(
                 new Employee("Sam", 20, "Male", 200000),
                 new Employee("Ken", 20, "Male", 300000)
         );
 
-        Pageable pagable = PageRequest.of(2,2);
+        Pageable pagable = PageRequest.of(0,2);
 
         Page<Employee> employeesPage = new PageImpl<>(employees, pagable, employees.size());
 
@@ -133,7 +132,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_correct_employee_when_update_given_found_employee() throws EmployeeNotFoundException {
+    public void should_return_correct_employee_when_replace_given_found_employee() throws EmployeeNotFoundException {
         //given
         Employee employee = new Employee("Sam", 20, "Male", 200000);
 
@@ -144,6 +143,7 @@ public class EmployeeServiceTest {
         Employee returnedEmployee = this.employeeService.replace("1", employee);
 
         //then
+        assertEquals(employee, returnedEmployee);
         assertEquals(employee.getId(), returnedEmployee.getId());
         assertEquals(employee.getAge(), returnedEmployee.getAge());
         assertEquals(employee.getGender(), returnedEmployee.getGender());
@@ -152,7 +152,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_throw_employee_not_found_exception_when_update_given_not_found_employee() {
+    public void should_throw_employee_not_found_exception_when_replace_given_not_found_employee() {
         //given
         Employee employee = new Employee("Sam", 20, "Male", 200000);
 
