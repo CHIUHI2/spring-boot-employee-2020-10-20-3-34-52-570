@@ -61,7 +61,7 @@ public class CompanyIntegrationTest {
     }
 
     @Test
-    void should_return_last_two_companies_when_get_all_with_pagination_given_companies_4_and_page_1_and_page_size_2() throws Exception {
+    void should_return_last_two_companies_when_get_all_with_pagination_given_companies_4_and_page_2_and_page_size_2() throws Exception {
         //given
         Company company1 = new Company("Company1");
         this.companyRepository.save(company1);
@@ -78,7 +78,7 @@ public class CompanyIntegrationTest {
         //when
         //then
         this.mockMvc.perform(get("/companies")
-                        .param("page", "1")
+                        .param("page", "2")
                         .param("pageSize", "2")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))

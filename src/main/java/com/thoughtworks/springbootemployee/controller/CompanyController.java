@@ -44,7 +44,7 @@ public class CompanyController {
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize
     ) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of((page > 0 ? page - 1 : 0), pageSize);
         Page<Company> companyPage = this.companyService.findAllWithPagination(pageable);
 
         return ResponseEntity.ok(companyPage.getContent());

@@ -68,14 +68,14 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_page_index_0_page_size_2() {
+    public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_2_page_index_1_page_size_2() {
         //given
         List<Employee> employees = Arrays.asList(
                 new Employee("Sam", 20, "Male", 200000),
                 new Employee("Ken", 20, "Male", 300000)
         );
 
-        Pageable pagable = PageRequest.of(0,2);
+        Pageable pagable = PageRequest.of(1,2);
 
         Page<Employee> employeesPage = new PageImpl<>(employees, pagable, employees.size());
 

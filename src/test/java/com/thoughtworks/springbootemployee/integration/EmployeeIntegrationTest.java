@@ -85,7 +85,7 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
-    void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_and_page_1_and_page_size_2() throws Exception {
+    void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_and_page_2_and_page_size_2() throws Exception {
         //given
         Employee employee1 = new Employee("Anna", 18, "Female", 20000);
         this.employeeRepository.save(employee1);
@@ -102,7 +102,7 @@ public class EmployeeIntegrationTest {
         //when
         //then
         this.mockMvc.perform(get("/employees")
-                    .param("page", "1")
+                    .param("page", "2")
                     .param("pageSize", "2")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))

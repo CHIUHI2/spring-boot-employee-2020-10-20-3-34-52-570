@@ -110,14 +110,14 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_3_page_index_0_page_size_2() {
+    void should_return_last_two_companies_when_find_companies_with_pagination_given_companies_2_page_1_page_size_2() {
         //given
         List<Company> companies = Arrays.asList(
                 new Company("Company1"),
                 new Company("Company2")
         );
 
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(1, 2);
         Page<Company> companyPage = new PageImpl<>(companies, pageable, companies.size());
 
         when(this.companyRepository.findAll(pageable)).thenReturn(companyPage);
