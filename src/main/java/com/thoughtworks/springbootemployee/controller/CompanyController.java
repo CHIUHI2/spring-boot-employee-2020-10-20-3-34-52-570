@@ -51,10 +51,10 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getOne(@PathVariable String id) {
-        Optional<Company> company = this.companyService.findCompanyById(id);
+    public ResponseEntity<Company> getOne(@PathVariable String id) throws CompanyNotFoundException {
+        Company company =  this.companyService.findCompanyById(id);
 
-        return company.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(company);
     }
 
     @GetMapping("/{id}/employees")

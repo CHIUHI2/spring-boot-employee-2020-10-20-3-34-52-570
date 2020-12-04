@@ -29,13 +29,7 @@ public class EmployeeService {
     }
 
     public Employee findEmployeeById(String id) throws EmployeeNotFoundException {
-        Optional<Employee> employee = this.employeeRepository.findById(id);
-
-        if(!employee.isPresent()) {
-            throw new EmployeeNotFoundException();
-        }
-
-        return employee.get();
+        return this.employeeRepository.findById(id).orElseThrow(EmployeeNotFoundException::new);
     }
 
     public Employee add(Employee employee) {
@@ -43,7 +37,7 @@ public class EmployeeService {
     }
 
     public Employee replace(String id, Employee requestEmployee) throws EmployeeNotFoundException {
-        if(!this.employeeRepository.existsById(id)) {
+        if (!this.employeeRepository.existsById(id)) {
             throw new EmployeeNotFoundException();
         }
 
@@ -53,7 +47,7 @@ public class EmployeeService {
     }
 
     public void delete(String id) throws EmployeeNotFoundException {
-        if(!this.employeeRepository.existsById(id)) {
+        if (!this.employeeRepository.existsById(id)) {
             throw new EmployeeNotFoundException();
         }
 

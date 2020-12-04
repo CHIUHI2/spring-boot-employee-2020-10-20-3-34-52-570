@@ -52,29 +52,29 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_correct_company_when_find_company_by_id_given_found_id() {
+    void should_return_correct_company_when_find_company_by_id_given_found_id() throws CompanyNotFoundException {
         //given
-        Optional<Company> company = Optional.of(new Company("Company1"));
+        Company company = new Company("Company1");
 
-        when(this.companyRepository.findById("1")).thenReturn(company);
+        when(this.companyRepository.findById("1")).thenReturn(Optional.of(company));
 
         //when
-        Optional<Company> returnedCompany = this.companyService.findCompanyById("1");
+        Company returnedCompany = this.companyService.findCompanyById("1");
 
         //then
         assertEquals(company, returnedCompany);
     }
 
     @Test
-    void should_return_nothing_when_find_company_by_id_given_not_found_id() {
+    void should_throw_company_not_found_exception_when_find_company_by_id_given_not_found_id() {
         //given
         when(this.companyRepository.findById("1")).thenReturn(Optional.empty());
 
-        //when
-        Optional<Company> company = this.companyService.findCompanyById("1");
-
         //then
-        assertEquals(Optional.empty(), company);
+        assertThrows(CompanyNotFoundException.class, () -> {
+            //when
+            this.companyService.findCompanyById("1");
+        });
     }
 
     @Test

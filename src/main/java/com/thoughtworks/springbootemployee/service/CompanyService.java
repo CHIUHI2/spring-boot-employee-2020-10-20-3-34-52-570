@@ -25,8 +25,8 @@ public class CompanyService {
         return this.companyRepository.findAll(pageable);
     }
 
-    public Optional<Company> findCompanyById(String id) {
-        return this.companyRepository.findById(id);
+    public Company findCompanyById(String id) throws CompanyNotFoundException {
+        return this.companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
     }
 
     public List<Employee> findCompanyEmployeesById(String id) throws CompanyNotFoundException {
