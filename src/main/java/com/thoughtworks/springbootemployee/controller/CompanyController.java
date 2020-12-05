@@ -1,15 +1,17 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.dto.CompanyResponse;
+import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
 import com.thoughtworks.springbootemployee.entity.Company;
-import com.thoughtworks.springbootemployee.entity.Employee;
 import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
+import com.thoughtworks.springbootemployee.mapper.CompanyMapper;
+import com.thoughtworks.springbootemployee.mapper.EmployeeMapper;
 import com.thoughtworks.springbootemployee.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +20,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/companies")
@@ -31,63 +31,55 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
     @GetMapping
-    public ResponseEntity<List<Company>> getAll() {
-        return ResponseEntity.ok(this.companyService.findAll());
+    public List<CompanyResponse> getAll() {
+        return this.companyMapper.toResponse(this.companyService.findAll());
     }
 
     @GetMapping(params = {
             "page",
             "pageSize"
     })
-    public ResponseEntity<List<Company>> getAllWithPagination(
+    public List<CompanyResponse> getAllWithPagination(
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer pageSize
     ) {
         Pageable pageable = PageRequest.of((page > 0 ? page - 1 : 0), pageSize);
         Page<Company> companyPage = this.companyService.findAllWithPagination(pageable);
 
-        return ResponseEntity.ok(companyPage.getContent());
+        return this.companyMapper.toResponse(companyPage.getContent());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getOne(@PathVariable String id) throws CompanyNotFoundException {
-        Company company =  this.companyService.findCompanyById(id);
-
-        return ResponseEntity.ok(company);
+    public CompanyResponse getOne(@PathVariable String id) throws CompanyNotFoundException {
+        return this.companyMapper.toReponse(this.companyService.findCompanyById(id));
     }
 
     @GetMapping("/{id}/employees")
-    public ResponseEntity<List<Employee>> getEmployees(@PathVariable String id) throws CompanyNotFoundException {
-        List<Employee> employees = this.companyService.findCompanyEmployeesById(id);
-
-        return ResponseEntity.ok(employees);
+    public List<EmployeeResponse> getEmployees(@PathVariable String id) throws CompanyNotFoundException {
+        return this.employeeMapper.toResponse(this.companyService.findCompanyEmployeesById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Company> add(@RequestBody Company company) {
-        Company addedCompany = this.companyService.add(company);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(addedCompany.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(addedCompany);
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompanyResponse add(@RequestBody Company company) {
+        return this.companyMapper.toReponse(this.companyService.add(company));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Company> relace(@PathVariable String id, @RequestBody Company company) throws CompanyNotFoundException {
-        Company updatedCompany = this.companyService.replace(id, company);
-
-        return ResponseEntity.ok(updatedCompany);
+    public CompanyResponse relace(@PathVariable String id, @RequestBody Company company) throws CompanyNotFoundException {
+        return this.companyMapper.toReponse(this.companyService.replace(id, company));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) throws CompanyNotFoundException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id) throws CompanyNotFoundException {
         this.companyService.delete(id);
-
-        return ResponseEntity.noContent().build();
     }
 }

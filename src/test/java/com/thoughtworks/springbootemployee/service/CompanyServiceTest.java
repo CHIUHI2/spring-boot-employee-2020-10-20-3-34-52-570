@@ -4,6 +4,7 @@ import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
 import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,9 @@ import static org.mockito.Mockito.when;
 public class CompanyServiceTest {
     @Mock
     CompanyRepository companyRepository;
+
+    @Mock
+    EmployeeRepository employeeRepository;
 
     @InjectMocks
     CompanyService companyService;
@@ -82,19 +86,19 @@ public class CompanyServiceTest {
         //given
         Company company = new Company("Company1");
 
-        Employee employee1 = new Employee("Sam", 20, "Male", 200000);
-        company.addEmployee(employee1);
-
-        Employee employee2 = new Employee("Ken", 20, "Male", 200000);
-        company.addEmployee(employee2);
+        List<Employee> employees = Arrays.asList(
+                new Employee("Sam", 20, "Male", 200000, "1"),
+                new Employee("Ken", 20, "Male", 200000, "1")
+        );
 
         when(this.companyRepository.findById("1")).thenReturn(Optional.of(company));
+        when(this.employeeRepository.findAllByCompanyId("1")).thenReturn(employees);
 
         //when
-        List<Employee> employees = this.companyService.findCompanyEmployeesById("1");
+        List<Employee> returnedEmployees = this.companyService.findCompanyEmployeesById("1");
 
         //then
-        assertEquals(Arrays.asList(employee1, employee2), employees);
+        assertEquals(employees, returnedEmployees);
     }
 
     @Test
@@ -134,9 +138,6 @@ public class CompanyServiceTest {
         //given
         Company company = new Company("Company1");
 
-        Employee employee = new Employee("Ken", 20, "Male", 200000);
-        company.addEmployee(employee);
-
         when(this.companyRepository.insert(company)).thenReturn(company);
 
         //when
@@ -144,12 +145,10 @@ public class CompanyServiceTest {
 
         //then
         assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
-        assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
-        assertEquals(company.getEmployees(), returnedCompany.getEmployees());
     }
 
     @Test
-    void should_return_correct_company_when_replace_given_found_company() throws CompanyNotFoundException {
+    void should_return_replaced_company_when_replace_given_found_company_id() throws CompanyNotFoundException {
         //given
         Company company = new Company("Company1");
 
@@ -161,12 +160,10 @@ public class CompanyServiceTest {
 
         //then
         assertEquals(company.getCompanyName(), returnedCompany.getCompanyName());
-        assertEquals(company.getEmployeesNumber(), returnedCompany.getEmployeesNumber());
-        assertEquals(company.getEmployees(), returnedCompany.getEmployees());
     }
 
     @Test
-    void should_throw_company_not_found_exception_when_replace_given_not_found_company() {
+    void should_throw_company_not_found_exception_when_replace_given_not_found_company_id() {
         //given
         Company company = new Company("Company1");
 
@@ -180,7 +177,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_call_company_repository_delete_by_id_once_when_delete_given_found_company() throws CompanyNotFoundException {
+    void should_call_company_repository_delete_by_id_once_when_delete_given_found_company_id() throws CompanyNotFoundException {
         //given
         when(this.companyRepository.existsById("1")).thenReturn(true);
 
@@ -192,7 +189,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_throw_company_not_found_exception_when_delete_given_not_found_company() {
+    void should_throw_company_not_found_exception_when_delete_given_not_found_company_id() {
         //given
         when(this.companyRepository.existsById("1")).thenReturn(false);
 

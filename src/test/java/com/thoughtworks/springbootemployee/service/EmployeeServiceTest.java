@@ -1,7 +1,9 @@
 package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.exception.EmployeeNotFoundException;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,9 @@ public class EmployeeServiceTest {
     @Mock
     EmployeeRepository employeeRepository;
 
+    @Mock
+    CompanyRepository companyRepository;
+
     @InjectMocks
     EmployeeService employeeService;
 
@@ -37,8 +42,8 @@ public class EmployeeServiceTest {
     public void should_return_all_employees_when_get_all_given_all_employees() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("Sam", 20, "Male", 200000),
-                new Employee("Ken", 20, "Male", 300000)
+                new Employee("Sam", 20, "Male", 200000, "1"),
+                new Employee("Ken", 20, "Male", 300000, "1")
         );
 
         when(this.employeeRepository.findAll()).thenReturn(employees);
@@ -54,8 +59,8 @@ public class EmployeeServiceTest {
     public void should_return_all_male_employees_when_get_all_by_gender_given_all_employees() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("Sam", 20, "Male", 200000),
-                new Employee("Ken", 20, "Male", 300000)
+                new Employee("Sam", 20, "Male", 200000, "1"),
+                new Employee("Ken", 20, "Male", 300000, "1")
         );
 
         when(this.employeeRepository.findAllByGender("Male")).thenReturn(employees);
@@ -71,8 +76,8 @@ public class EmployeeServiceTest {
     public void should_return_last_two_employees_when_get_all_with_pagination_given_employees_2_page_index_1_page_size_2() {
         //given
         List<Employee> employees = Arrays.asList(
-                new Employee("Sam", 20, "Male", 200000),
-                new Employee("Ken", 20, "Male", 300000)
+                new Employee("Sam", 20, "Male", 200000, "1"),
+                new Employee("Ken", 20, "Male", 300000, "1")
         );
 
         Pageable pagable = PageRequest.of(1,2);
@@ -91,7 +96,7 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_correct_employee_when_find_employee_by_id_given_found_id() throws EmployeeNotFoundException {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 200000);
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
 
         when(this.employeeRepository.findById("1")).thenReturn(Optional.of(employee));
 
@@ -115,10 +120,11 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_correct_employee_when_add_given_not_existed_employee() {
+    public void should_return_correct_employee_when_add_given_not_existed_employee() throws CompanyNotFoundException {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 200000);
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
 
+        when(this.companyRepository.existsById("1")).thenReturn(true);
         when(this.employeeRepository.insert(employee)).thenReturn(employee);
 
         //when
@@ -132,18 +138,32 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_return_correct_employee_when_replace_given_found_employee() throws EmployeeNotFoundException {
+    public void should_throw_company_not_found_exception_when_add_given_not_existed_company_id() {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 200000);
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
+
+        when(this.companyRepository.existsById("1")).thenReturn(false);
+
+        //then
+        assertThrows(CompanyNotFoundException.class, () -> {
+            //when
+            this.employeeService.add(employee);
+        });
+    }
+
+    @Test
+    public void should_return_correct_employee_when_replace_given_found_employee() throws EmployeeNotFoundException, CompanyNotFoundException {
+        //given
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
 
         when(this.employeeRepository.existsById("1")).thenReturn(true);
+        when(this.companyRepository.existsById("1")).thenReturn(true);
         when(this.employeeRepository.save(employee)).thenReturn(employee);
 
         //when
         Employee returnedEmployee = this.employeeService.replace("1", employee);
 
         //then
-        assertEquals(employee, returnedEmployee);
         assertEquals(employee.getId(), returnedEmployee.getId());
         assertEquals(employee.getAge(), returnedEmployee.getAge());
         assertEquals(employee.getGender(), returnedEmployee.getGender());
@@ -152,14 +172,29 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void should_throw_employee_not_found_exception_when_replace_given_not_found_employee() {
+    public void should_throw_employee_not_found_exception_when_replace_given_not_found_employee_id() {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 200000);
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
 
         when(this.employeeRepository.existsById("1")).thenReturn(false);
 
         //then
         assertThrows(EmployeeNotFoundException.class, () -> {
+            //when
+            this.employeeService.replace("1", employee);
+        });
+    }
+
+    @Test
+    public void should_throw_company_not_found_exception_when_replace_given_not_found_company_id() {
+        //given
+        Employee employee = new Employee("Sam", 20, "Male", 200000, "1");
+
+        when(this.employeeRepository.existsById("1")).thenReturn(true);
+        when(this.companyRepository.existsById("1")).thenReturn(false);
+
+        //then
+        assertThrows(CompanyNotFoundException.class, () -> {
             //when
             this.employeeService.replace("1", employee);
         });

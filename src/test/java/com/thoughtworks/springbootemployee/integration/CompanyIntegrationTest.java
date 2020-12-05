@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -51,10 +50,9 @@ public class CompanyIntegrationTest {
 
         //when
         //then
-        this.mockMvc.perform(get("/companies"))
+         this.mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].companyName").value("Company"))
                 .andExpect(jsonPath("$[0].employeesNumber").value(0))
                 .andExpect(jsonPath("$[0].employees").isEmpty());
@@ -82,11 +80,9 @@ public class CompanyIntegrationTest {
                         .param("pageSize", "2")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].companyName").value("Company3"))
                 .andExpect(jsonPath("$[0].employeesNumber").value(0))
                 .andExpect(jsonPath("$[0].employees").isEmpty())
-                .andExpect(jsonPath("$[1].id").isString())
                 .andExpect(jsonPath("$[1].companyName").value("Company4"))
                 .andExpect(jsonPath("$[1].employeesNumber").value(0))
                 .andExpect(jsonPath("$[1].employees").isEmpty());
@@ -102,7 +98,6 @@ public class CompanyIntegrationTest {
         //then
         this.mockMvc.perform(get("/companies/" + addedCompany.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(addedCompany.getId()))
                 .andExpect(jsonPath("$.companyName").value("Company"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
                 .andExpect(jsonPath("$.employees").isEmpty());
@@ -133,7 +128,6 @@ public class CompanyIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody.toString())
                 ).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.companyName").value("Company"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
                 .andExpect(jsonPath("$.employees").isEmpty());
@@ -141,33 +135,10 @@ public class CompanyIntegrationTest {
         List<Company> companies = this.companyRepository.findAll();
         assertEquals(1, companies.size());
         assertEquals("Company", companies.get(0).getCompanyName());
-        assertEquals(0, companies.get(0).getEmployeesNumber());
-        assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
     }
 
     @Test
-    void should_return_409_when_add_given_existed_company_id() throws Exception {
-        //given
-        Company company = new Company("Company");
-        Company addedCompany = this.companyRepository.insert(company);
-
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("id", addedCompany.getId());
-        requestBody.put("companyName", "Company");
-
-        //when
-        //then
-        this.mockMvc.perform(post("/companies")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody.toString())
-                ).andExpect(status().isConflict());
-
-        List<Company> companies = this.companyRepository.findAll();
-        assertEquals(1, companies.size());
-    }
-
-    @Test
-    void should_return_updated_company_when_replace_given_found_id_and_company() throws Exception {
+    void should_return_replaced_company_when_replace_given_found_id_and_company() throws Exception {
         //given
         Company company = new Company("Company");
         Company addedCompany = this.companyRepository.save(company);
@@ -181,17 +152,14 @@ public class CompanyIntegrationTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody.toString())
                 ).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(addedCompany.getId()))
                 .andExpect(jsonPath("$.companyName").value("Company1"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
-                .andExpect(jsonPath("$.employees").isEmpty());
+                .andExpect(jsonPath("$.employees").isEmpty());;
 
         List<Company> companies = this.companyRepository.findAll();
         assertEquals(1, companies.size());
         assertEquals(addedCompany.getId(), companies.get(0).getId());
         assertEquals("Company1", companies.get(0).getCompanyName());
-        assertEquals(0, companies.get(0).getEmployeesNumber());
-        assertEquals(new ArrayList<>(), companies.get(0).getEmployees());
     }
 
     @Test
@@ -233,32 +201,37 @@ public class CompanyIntegrationTest {
     @Test
     void should_return_404_when_delete_given_found_id() throws Exception {
         //given
-        Company company = new Company("Company");
-        Company addedCompany = this.companyRepository.save(company);
-        this.companyRepository.deleteAll();
+        Company company1 = new Company("Company1");
+        Company addedCompany1 = this.companyRepository.save(company1);
+
+        Company company2 = new Company("Company2");
+        this.companyRepository.save(company2);
+
+        this.companyRepository.deleteById(addedCompany1.getId());
 
         //when
         //then
-        this.mockMvc.perform(delete("/companies/" + addedCompany.getId()))
+        this.mockMvc.perform(delete("/companies/" + addedCompany1.getId()))
                 .andExpect(status().isNotFound());
+
+        List<Company> companies = this.companyRepository.findAll();
+        assertEquals(1, companies.size());
     }
 
     @Test
     void should_return_employees_when_get_employees_given_found_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 20000);
-        Employee addedEmployee = this.employeeRepository.save(employee);
-
         Company company = new Company("Company");
-        company.addEmployee(addedEmployee);
         Company addedCompany = this.companyRepository.save(company);
+
+        Employee employee = new Employee("Sam", 20, "Male", 20000, addedCompany.getId());
+        this.employeeRepository.save(employee);
 
         //when
         //then
         this.mockMvc.perform(get("/companies/" + addedCompany.getId() + "/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(addedEmployee.getId()))
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(20))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
@@ -268,12 +241,12 @@ public class CompanyIntegrationTest {
     @Test
     void should_return_404_when_get_employees_given_not_found_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 20000);
-        Employee addedEmployee = this.employeeRepository.save(employee);
-
         Company company = new Company("Company");
-        company.addEmployee(addedEmployee);
         Company addedCompany = this.companyRepository.save(company);
+
+        Employee employee = new Employee("Sam", 20, "Male", 20000, addedCompany.getId());
+        this.employeeRepository.save(employee);
+
         this.companyRepository.deleteAll();
 
         //when

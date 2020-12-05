@@ -1,9 +1,12 @@
 package com.thoughtworks.springbootemployee.integration;
 
+import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,15 +34,27 @@ public class EmployeeIntegrationTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    private Company addedCompany;
+
+    @BeforeEach
+    void setUp() {
+        Company company = new Company("Company");
+        this.addedCompany = this.companyRepository.save(company);
+    }
+
     @AfterEach
     void tearDown() {
        this.employeeRepository.deleteAll();
+       this.companyRepository.deleteAll();
     }
 
     @Test
     void should_return_all_employees_when_get_all_given_employees() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee employee = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         this.employeeRepository.save(employee);
 
         //when
@@ -47,7 +62,6 @@ public class EmployeeIntegrationTest {
         this.mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
@@ -57,13 +71,13 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_all_male_employees_when_get_all_by_gender_given_employees_and_required_gender_male() throws Exception {
         //given
-        Employee employee1 = new Employee("Sam", 18, "Male", 20000);
+        Employee employee1 = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         this.employeeRepository.save(employee1);
 
-        Employee employee2 = new Employee("Ken", 20, "Male", 30000);
+        Employee employee2 = new Employee("Ken", 20, "Male", 30000, this.addedCompany.getId());
         this.employeeRepository.save(employee2);
 
-        Employee employee3 = new Employee("Anna", 18, "Female", 20000);
+        Employee employee3 = new Employee("Anna", 18, "Female", 20000, this.addedCompany.getId());
         this.employeeRepository.save(employee3);
 
         //when
@@ -72,12 +86,10 @@ public class EmployeeIntegrationTest {
                     .param("gender", "Male")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
                 .andExpect(jsonPath("$[0].salary").value(20000))
-                .andExpect(jsonPath("$[1].id").isString())
                 .andExpect(jsonPath("$[1].name").value("Ken"))
                 .andExpect(jsonPath("$[1].age").value(20))
                 .andExpect(jsonPath("$[1].gender").value("Male"))
@@ -87,16 +99,16 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_last_two_employees_when_get_all_with_pagination_given_employees_4_and_page_2_and_page_size_2() throws Exception {
         //given
-        Employee employee1 = new Employee("Anna", 18, "Female", 20000);
+        Employee employee1 = new Employee("Anna", 18, "Female", 20000, this.addedCompany.getId());
         this.employeeRepository.save(employee1);
 
-        Employee employee2 = new Employee("Yvonne", 19, "Female", 30000);
+        Employee employee2 = new Employee("Yvonne", 19, "Female", 30000, this.addedCompany.getId());
         this.employeeRepository.save(employee2);
 
-        Employee employee3 = new Employee("Sam", 18, "Male", 20000);
+        Employee employee3 = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         this.employeeRepository.save(employee3);
 
-        Employee employee4 = new Employee("Ken", 20, "Male", 30000);
+        Employee employee4 = new Employee("Ken", 20, "Male", 30000, this.addedCompany.getId());
         this.employeeRepository.save(employee4);
 
         //when
@@ -106,12 +118,10 @@ public class EmployeeIntegrationTest {
                     .param("pageSize", "2")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").isString())
                 .andExpect(jsonPath("$[0].name").value("Sam"))
                 .andExpect(jsonPath("$[0].age").value(18))
                 .andExpect(jsonPath("$[0].gender").value("Male"))
                 .andExpect(jsonPath("$[0].salary").value(20000))
-                .andExpect(jsonPath("$[1].id").isString())
                 .andExpect(jsonPath("$[1].name").value("Ken"))
                 .andExpect(jsonPath("$[1].age").value(20))
                 .andExpect(jsonPath("$[1].gender").value("Male"))
@@ -121,14 +131,13 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_employee_when_get_one_given_found_employee_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee employee = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         Employee addedEmployee = this.employeeRepository.save(employee);
 
         //when
         //then
         this.mockMvc.perform(get("/employees/" + addedEmployee.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(addedEmployee.getId()))
                 .andExpect(jsonPath("$.name").value("Sam"))
                 .andExpect(jsonPath("$.age").value(18))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -138,7 +147,7 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_404_when_get_one_given_not_found_employee_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee employee = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         Employee addedEmployee = this.employeeRepository.save(employee);
         this.employeeRepository.deleteAll();
 
@@ -156,6 +165,7 @@ public class EmployeeIntegrationTest {
         requestBody.put("age", 18);
         requestBody.put("gender", "Male");
         requestBody.put("salary", 20000);
+        requestBody.put("companyId", this.addedCompany.getId());
 
         //when
         //then
@@ -163,7 +173,6 @@ public class EmployeeIntegrationTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody.toString())
                 ).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isString())
                 .andExpect(jsonPath("$.name").value("Sam"))
                 .andExpect(jsonPath("$.age").value(18))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -175,36 +184,36 @@ public class EmployeeIntegrationTest {
         assertEquals(18, employees.get(0).getAge());
         assertEquals("Male", employees.get(0).getGender());
         assertEquals(20000, employees.get(0).getSalary());
+        assertEquals(this.addedCompany.getId(), employees.get(0).getCompanyId());
     }
 
     @Test
-    void should_return_409_when_add_given_existed_employee_id() throws Exception {
+    void should_return_404_when_add_given_not_found_company_id_and_employee() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 20, "Male", 20000);
-        Employee addedEmployee = this.employeeRepository.insert(employee);
+        this.companyRepository.deleteAll();
 
         JSONObject requestBody = new JSONObject();
-        requestBody.put("id", addedEmployee.getId());
-        requestBody.put("name", "Ken");
-        requestBody.put("age", 20);
+        requestBody.put("name", "Sam");
+        requestBody.put("age", 18);
         requestBody.put("gender", "Male");
         requestBody.put("salary", 20000);
+        requestBody.put("companyId", this.addedCompany.getId());
 
         //when
         //then
         this.mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody.toString())
-        ).andExpect(status().isConflict());
+        ).andExpect(status().isNotFound());
 
         List<Employee> employees = this.employeeRepository.findAll();
-        assertEquals(1, employees.size());
+        assertEquals(0, employees.size());
     }
 
     @Test
-    void should_return_updated_employee_when_replace_given_found_id_and_employee() throws Exception {
+    void should_return_replaced_employee_when_replace_given_found_id_and_employee() throws Exception {
         //given
-        Employee employee = new Employee("Ken", 20, "Male", 30000);
+        Employee employee = new Employee("Ken", 20, "Male", 30000, this.addedCompany.getId());
         Employee addedEmployee = this.employeeRepository.save(employee);
 
         JSONObject requestBody = new JSONObject();
@@ -212,14 +221,14 @@ public class EmployeeIntegrationTest {
         requestBody.put("age", 18);
         requestBody.put("gender", "Male");
         requestBody.put("salary", 20000);
+        requestBody.put("companyId", this.addedCompany.getId());
 
         //when
         //then
         this.mockMvc.perform(put("/employees/" + addedEmployee.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody.toString())
-        ).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(addedEmployee.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody.toString())
+                ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Sam"))
                 .andExpect(jsonPath("$.age").value(18))
                 .andExpect(jsonPath("$.gender").value("Male"))
@@ -232,12 +241,13 @@ public class EmployeeIntegrationTest {
         assertEquals(18, employees.get(0).getAge());
         assertEquals("Male", employees.get(0).getGender());
         assertEquals(20000, employees.get(0).getSalary());
+        assertEquals(this.addedCompany.getId(), employees.get(0).getCompanyId());
     }
 
     @Test
     void should_return_404_when_replace_given_not_found_id_and_employee() throws Exception {
         //given
-        Employee employee = new Employee("Ken", 20, "Male", 30000);
+        Employee employee = new Employee("Ken", 20, "Male", 30000, this.addedCompany.getId());
         Employee addedEmployee = this.employeeRepository.save(employee);
         this.employeeRepository.deleteAll();
 
@@ -246,6 +256,7 @@ public class EmployeeIntegrationTest {
         requestBody.put("age", 18);
         requestBody.put("gender", "Male");
         requestBody.put("salary", 20000);
+        requestBody.put("companyId", this.addedCompany.getId());
 
         //when
         //then
@@ -259,9 +270,40 @@ public class EmployeeIntegrationTest {
     }
 
     @Test
+    void should_return_404_when_replace_given_not_found_company_id_and_employee() throws Exception {
+        //given
+        Employee employee = new Employee("Ken", 20, "Male", 30000, this.addedCompany.getId());
+        Employee addedEmployee = this.employeeRepository.save(employee);
+        this.companyRepository.deleteAll();
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("name", "Sam");
+        requestBody.put("age", 18);
+        requestBody.put("gender", "Male");
+        requestBody.put("salary", 20000);
+        requestBody.put("companyId", this.addedCompany.getId());
+
+        //when
+        //then
+        this.mockMvc.perform(put("/employees/" + addedEmployee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody.toString())
+        ).andExpect(status().isNotFound());
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(1, employees.size());
+        assertEquals(addedEmployee.getId(), employees.get(0).getId());
+        assertEquals("Ken", employees.get(0).getName());
+        assertEquals(20, employees.get(0).getAge());
+        assertEquals("Male", employees.get(0).getGender());
+        assertEquals(30000, employees.get(0).getSalary());
+        assertEquals(this.addedCompany.getId(), employees.get(0).getCompanyId());
+    }
+
+    @Test
     void should_return_204_when_delete_given_found_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 18, "Male", 20000);
+        Employee employee = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
         Employee addedEmployee = this.employeeRepository.save(employee);
 
         //when
@@ -276,13 +318,20 @@ public class EmployeeIntegrationTest {
     @Test
     void should_return_404_when_delete_given_not_found_id() throws Exception {
         //given
-        Employee employee = new Employee("Sam", 18, "Male", 20000);
-        Employee addedEmployee = this.employeeRepository.save(employee);
-        this.employeeRepository.deleteAll();
+        Employee employee1 = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
+        Employee addedEmployee1 = this.employeeRepository.save(employee1);
+
+        Employee employee2 = new Employee("Sam", 18, "Male", 20000, this.addedCompany.getId());
+        this.employeeRepository.save(employee2);
+
+        this.employeeRepository.deleteById(addedEmployee1.getId());
 
         //when
         //then
-        this.mockMvc.perform(delete("/employees/" + addedEmployee.getId()))
+        this.mockMvc.perform(delete("/employees/" + addedEmployee1.getId()))
                 .andExpect(status().isNotFound());
+
+        List<Employee> employees = this.employeeRepository.findAll();
+        assertEquals(1, employees.size());
     }
 }
