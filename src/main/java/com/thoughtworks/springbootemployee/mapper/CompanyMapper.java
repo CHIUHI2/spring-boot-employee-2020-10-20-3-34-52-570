@@ -27,7 +27,7 @@ public class CompanyMapper {
         return company;
     }
 
-    public CompanyResponse toReponse(Company company) {
+    public CompanyResponse toResponse(Company company) {
         CompanyResponse companyResponse = new CompanyResponse();
 
         BeanUtils.copyProperties(company, companyResponse);
@@ -45,7 +45,7 @@ public class CompanyMapper {
 
     public List<CompanyResponse> toResponse(List<Company> companies) {
         return companies.stream()
-                .map(this::toReponse)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

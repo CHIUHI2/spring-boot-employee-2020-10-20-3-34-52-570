@@ -1,5 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.dto.CompanyRequest;
 import com.thoughtworks.springbootemployee.dto.CompanyResponse;
 import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
 import com.thoughtworks.springbootemployee.entity.Company;
@@ -58,7 +59,7 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public CompanyResponse getOne(@PathVariable String id) throws CompanyNotFoundException {
-        return this.companyMapper.toReponse(this.companyService.findCompanyById(id));
+        return this.companyMapper.toResponse(this.companyService.findCompanyById(id));
     }
 
     @GetMapping("/{id}/employees")
@@ -68,13 +69,13 @@ public class CompanyController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompanyResponse add(@RequestBody Company company) {
-        return this.companyMapper.toReponse(this.companyService.add(company));
+    public CompanyResponse add(@RequestBody CompanyRequest companyRequest) {
+        return this.companyMapper.toResponse(this.companyService.add(this.companyMapper.toEntity(companyRequest)));
     }
 
     @PutMapping("/{id}")
-    public CompanyResponse relace(@PathVariable String id, @RequestBody Company company) throws CompanyNotFoundException {
-        return this.companyMapper.toReponse(this.companyService.replace(id, company));
+    public CompanyResponse relace(@PathVariable String id, @RequestBody CompanyRequest companyRequest) throws CompanyNotFoundException {
+        return this.companyMapper.toResponse(this.companyService.replace(id, this.companyMapper.toEntity(companyRequest)));
     }
 
     @DeleteMapping("/{id}")

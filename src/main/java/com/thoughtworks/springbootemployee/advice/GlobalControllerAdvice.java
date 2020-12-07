@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class})
-    public ErrorResponse handleIllegaoArgument(IllegalArgumentException exception) {
+    public ErrorResponse handleIllegalArgument(IllegalArgumentException exception) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.name(), exception.getMessage());
     }
 

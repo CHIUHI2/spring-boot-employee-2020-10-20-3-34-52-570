@@ -154,7 +154,7 @@ public class CompanyIntegrationTest {
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName").value("Company1"))
                 .andExpect(jsonPath("$.employeesNumber").value(0))
-                .andExpect(jsonPath("$.employees").isEmpty());;
+                .andExpect(jsonPath("$.employees").isEmpty());
 
         List<Company> companies = this.companyRepository.findAll();
         assertEquals(1, companies.size());
