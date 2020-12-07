@@ -74,7 +74,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public CompanyResponse relace(@PathVariable String id, @RequestBody CompanyRequest companyRequest) throws CompanyNotFoundException {
+    public CompanyResponse replace(@PathVariable String id, @RequestBody CompanyRequest companyRequest) throws CompanyNotFoundException {
         return this.companyMapper.toResponse(this.companyService.replace(id, this.companyMapper.toEntity(companyRequest)));
     }
 
